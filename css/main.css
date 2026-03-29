@@ -14721,14 +14721,6 @@ textarea.form-control-lg {
   right: 1rem;
 }
 
-/* Technical fields stay LTR so values and placeholders read correctly */
-[dir="rtl"] input[type="email"],
-[dir="rtl"] input[type="url"],
-[dir="rtl"] input[type="tel"] {
-  direction: ltr;
-  text-align: start;
-}
-
 .card {
   border: none;
   border-radius: var(--border-radius);
