@@ -14667,6 +14667,44 @@ textarea.form-control-lg {
   transition: var(--transition-base);
 }
 
+[dir="rtl"] .admin-sidebar {
+  left: auto;
+  right: 0;
+  border-right: none;
+  border-left: 1px solid var(--bs-border-color);
+}
+
+[dir="rtl"] .admin-main,
+[dir="rtl"] .admin-footer {
+  margin-left: 0;
+  margin-right: var(--sidebar-width);
+}
+
+[dir="rtl"] .admin-wrapper.sidebar-collapsed .admin-main,
+[dir="rtl"] .admin-wrapper.sidebar-collapsed .admin-footer {
+  margin-left: 0;
+  margin-right: var(--sidebar-mini-width);
+}
+
+[dir="rtl"] .hamburger-menu,
+[dir="rtl"] .reports-page .hamburger-menu {
+  left: auto;
+  right: 216px;
+}
+
+@media (max-width: 991.98px) {
+  [dir="rtl"] .hamburger-menu,
+  [dir="rtl"] .reports-page .hamburger-menu {
+    left: auto;
+    right: 1rem;
+  }
+}
+
+[dir="rtl"] .admin-wrapper.sidebar-collapsed .reports-page .hamburger-menu {
+  left: auto;
+  right: 1rem;
+}
+
 .card {
   border: none;
   border-radius: var(--border-radius);
@@ -16025,6 +16063,9 @@ textarea.form-control-lg {
 @media (max-width: 768px) {
   .admin-sidebar {
     transform: translateX(-100%);
+  }
+  [dir="rtl"] .admin-sidebar {
+    transform: translateX(100%);
   }
   .admin-sidebar.show {
     transform: translateX(0);

@@ -10,6 +10,10 @@
         } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
           document.documentElement.setAttribute('data-bs-theme', 'dark');
         }
+        var dirStored = localStorage.getItem('textDirection');
+        if (dirStored === 'rtl' || dirStored === 'ltr') {
+          document.documentElement.setAttribute('dir', dirStored);
+        }
       } catch (e) {}
     })();
     </script>
@@ -93,6 +97,18 @@
                                         title="Toggle theme">
                                     <i class="bi bi-sun-fill" x-show="currentTheme === 'light'"></i>
                                     <i class="bi bi-moon-fill" x-show="currentTheme === 'dark'"></i>
+                                </button>
+                            </div>
+
+                            <div x-data="dirSwitch">
+                                <button class="btn btn-outline-secondary me-2" 
+                                        type="button" 
+                                        @click="toggle()"
+                                        data-bs-toggle="tooltip"
+                                        data-bs-placement="bottom"
+                                        :title="currentDir === 'rtl' ? 'Switch to LTR layout' : 'Switch to RTL layout'">
+                                    <i class="bi bi-text-left" x-show="currentDir === 'ltr'"></i>
+                                    <i class="bi bi-text-right" x-show="currentDir === 'rtl'"></i>
                                 </button>
                             </div>
 

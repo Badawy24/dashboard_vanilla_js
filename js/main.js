@@ -479,6 +479,18 @@ function resolveInitialTheme() {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
+function resolveInitialDir() {
+  try {
+    const stored = localStorage.getItem('textDirection');
+    if (stored === 'rtl' || stored === 'ltr') return stored;
+  } catch (e) {
+    /* private mode */
+  }
+  const attr = document.documentElement.getAttribute('dir');
+  if (attr === 'rtl' || attr === 'ltr') return attr;
+  return 'ltr';
+}
+
 
 // ===== scripts/utils/notifications.js =====
 // ==========================================================================
@@ -1606,6 +1618,29 @@ document.addEventListener('alpine:init', () => {
       );
 
       this.resetForm();
+    }
+  }));
+
+  Alpine.data('dirSwitch', () => ({
+    currentDir: 'ltr',
+
+    init() {
+      this.currentDir = resolveInitialDir();
+      this.applyDir();
+    },
+
+    toggle() {
+      this.currentDir = this.currentDir === 'ltr' ? 'rtl' : 'ltr';
+      this.applyDir();
+      try {
+        localStorage.setItem('textDirection', this.currentDir);
+      } catch (e) {
+        /* private mode */
+      }
+    },
+
+    applyDir() {
+      document.documentElement.setAttribute('dir', this.currentDir);
     }
   }));
 });
