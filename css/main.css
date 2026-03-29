@@ -425,7 +425,7 @@ caption {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   color: var(--bs-secondary-color);
-  text-align: left;
+  text-align: start;
 }
 
 th {
@@ -2614,7 +2614,9 @@ textarea.form-control-lg {
   --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%231e293b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
   display: block;
   width: 100%;
-  padding: 0.75rem 3rem 0.75rem 1rem;
+  padding-block: 0.75rem;
+  padding-inline-start: 1rem;
+  padding-inline-end: 3rem;
   font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.6;
@@ -2629,6 +2631,10 @@ textarea.form-control-lg {
   border-radius: 0.5rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+.form-select:dir(rtl):not([multiple]):not([size]),
+.form-select[size="1"]:dir(rtl) {
+  background-position: left 1rem center;
+}
 @media (prefers-reduced-motion: reduce) {
   .form-select {
     transition: none;
@@ -2640,7 +2646,7 @@ textarea.form-control-lg {
   box-shadow: 0 0 0 0.25rem rgba(99, 102, 241, 0.25);
 }
 .form-select[multiple], .form-select[size]:not([size="1"]) {
-  padding-right: 1rem;
+  padding-inline-end: 1rem;
   background-image: none;
 }
 .form-select:disabled {
@@ -2654,7 +2660,7 @@ textarea.form-control-lg {
 .form-select-sm {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
-  padding-left: 0.5rem;
+  padding-inline-start: 0.5rem;
   font-size: 0.7875rem;
   border-radius: var(--bs-border-radius-sm);
 }
@@ -2662,7 +2668,7 @@ textarea.form-control-lg {
 .form-select-lg {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  padding-left: 1rem;
+  padding-inline-start: 1rem;
   font-size: 1.125rem;
   border-radius: var(--bs-border-radius-lg);
 }
@@ -2674,23 +2680,23 @@ textarea.form-control-lg {
 .form-check {
   display: block;
   min-height: 1.44rem;
-  padding-left: 1.5em;
+  padding-inline-start: 1.5em;
   margin-bottom: 0.125rem;
 }
 .form-check .form-check-input {
-  float: left;
-  margin-left: -1.5em;
+  float: inline-start;
+  margin-inline-start: -1.5em;
 }
 
 .form-check-reverse {
-  padding-right: 1.5em;
-  padding-left: 0;
-  text-align: right;
+  padding-inline-end: 1.5em;
+  padding-inline-start: 0;
+  text-align: end;
 }
 .form-check-reverse .form-check-input {
-  float: right;
-  margin-right: -1.5em;
-  margin-left: 0;
+  float: inline-end;
+  margin-inline-end: -1.5em;
+  margin-inline-start: 0;
 }
 
 .form-check-input {
@@ -2749,12 +2755,12 @@ textarea.form-control-lg {
 }
 
 .form-switch {
-  padding-left: 2.5em;
+  padding-inline-start: 2.5em;
 }
 .form-switch .form-check-input {
   --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 0, 0, 0.25%29'/%3e%3c/svg%3e");
   width: 2em;
-  margin-left: -2.5em;
+  margin-inline-start: -2.5em;
   background-image: var(--bs-form-switch-bg);
   background-position: left center;
   border-radius: 2em;
@@ -2773,17 +2779,17 @@ textarea.form-control-lg {
   --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23fff'/%3e%3c/svg%3e");
 }
 .form-switch.form-check-reverse {
-  padding-right: 2.5em;
-  padding-left: 0;
+  padding-inline-end: 2.5em;
+  padding-inline-start: 0;
 }
 .form-switch.form-check-reverse .form-check-input {
-  margin-right: -2.5em;
-  margin-left: 0;
+  margin-inline-end: -2.5em;
+  margin-inline-start: 0;
 }
 
 .form-check-inline {
   display: inline-block;
-  margin-right: 1rem;
+  margin-inline-end: 1rem;
 }
 
 .btn-check {
@@ -2972,19 +2978,19 @@ textarea.form-control-lg {
   background-color: var(--bs-secondary-bg);
 }
 
-[dir="rtl"] .form-floating > label {
+.form-floating > label:dir(rtl) {
   left: auto;
   inset-inline-start: 0;
   inset-inline-end: 0;
   transform-origin: 100% 0;
 }
-[dir="rtl"] .form-floating > .form-control:focus ~ label,
-[dir="rtl"] .form-floating > .form-control:not(:placeholder-shown) ~ label,
-[dir="rtl"] .form-floating > .form-control-plaintext ~ label,
-[dir="rtl"] .form-floating > .form-select ~ label {
+.form-floating > .form-control:focus:dir(rtl) ~ label,
+.form-floating > .form-control:not(:placeholder-shown):dir(rtl) ~ label,
+.form-floating > .form-control-plaintext:dir(rtl) ~ label,
+.form-floating > .form-select:dir(rtl) ~ label {
   transform: scale(0.85) translateY(-0.5rem) translateX(-0.15rem);
 }
-[dir="rtl"] .form-floating > .form-control:-webkit-autofill ~ label {
+.form-floating > .form-control:-webkit-autofill:dir(rtl) ~ label {
   transform: scale(0.85) translateY(-0.5rem) translateX(-0.15rem);
 }
 
@@ -3697,7 +3703,7 @@ textarea.form-control-lg {
 }
 .dropdown-toggle::after {
   display: inline-block;
-  margin-left: 0.255em;
+  margin-inline-start: 0.255em;
   vertical-align: 0.255em;
   content: "";
   border-top: 0.3em solid;
@@ -3706,7 +3712,7 @@ textarea.form-control-lg {
   border-left: 0.3em solid transparent;
 }
 .dropdown-toggle:empty::after {
-  margin-left: 0;
+  margin-inline-start: 0;
 }
 
 .dropdown-menu {
@@ -3744,7 +3750,7 @@ textarea.form-control-lg {
   margin: 0;
   font-size: var(--bs-dropdown-font-size);
   color: var(--bs-dropdown-color);
-  text-align: left;
+  text-align: start;
   list-style: none;
   background-color: var(--bs-dropdown-bg);
   background-clip: padding-box;
@@ -4040,19 +4046,19 @@ textarea.form-control-lg {
 }
 .btn-group > :not(.btn-check:first-child) + .btn,
 .btn-group > .btn-group:not(:first-child) {
-  margin-left: calc(var(--bs-border-width) * -1);
+  margin-inline-start: calc(var(--bs-border-width) * -1);
 }
 .btn-group > .btn:not(:last-child):not(.dropdown-toggle),
 .btn-group > .btn.dropdown-toggle-split:first-child,
 .btn-group > .btn-group:not(:last-child) > .btn {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
 }
 .btn-group > .btn:nth-child(n+3),
 .btn-group > :not(.btn-check) + .btn,
 .btn-group > .btn-group:not(:first-child) > .btn {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
 }
 
 .dropdown-toggle-split {
@@ -4881,7 +4887,7 @@ textarea.form-control-lg {
   padding: var(--bs-accordion-btn-padding-y) var(--bs-accordion-btn-padding-x);
   font-size: 0.9rem;
   color: var(--bs-accordion-btn-color);
-  text-align: left;
+  text-align: start;
   background-color: var(--bs-accordion-btn-bg);
   border: 0;
   border-radius: 0;
@@ -5862,12 +5868,15 @@ textarea.form-control-lg {
   align-items: center;
   padding: var(--bs-modal-header-padding);
   border-bottom: var(--bs-modal-header-border-width) solid var(--bs-modal-header-border-color);
-  border-top-left-radius: var(--bs-modal-inner-border-radius);
-  border-top-right-radius: var(--bs-modal-inner-border-radius);
+  border-start-start-radius: var(--bs-modal-inner-border-radius);
+  border-start-end-radius: var(--bs-modal-inner-border-radius);
 }
 .modal-header .btn-close {
   padding: calc(var(--bs-modal-header-padding-y) * 0.5) calc(var(--bs-modal-header-padding-x) * 0.5);
-  margin: calc(-0.5 * var(--bs-modal-header-padding-y)) calc(-0.5 * var(--bs-modal-header-padding-x)) calc(-0.5 * var(--bs-modal-header-padding-y)) auto;
+  margin-block-start: calc(-0.5 * var(--bs-modal-header-padding-y));
+  margin-block-end: calc(-0.5 * var(--bs-modal-header-padding-y));
+  margin-inline-end: calc(-0.5 * var(--bs-modal-header-padding-x));
+  margin-inline-start: auto;
 }
 
 .modal-title {
@@ -5890,8 +5899,12 @@ textarea.form-control-lg {
   padding: calc(var(--bs-modal-padding) - var(--bs-modal-footer-gap) * 0.5);
   background-color: var(--bs-modal-footer-bg);
   border-top: var(--bs-modal-footer-border-width) solid var(--bs-modal-footer-border-color);
-  border-bottom-right-radius: var(--bs-modal-inner-border-radius);
-  border-bottom-left-radius: var(--bs-modal-inner-border-radius);
+  border-end-end-radius: var(--bs-modal-inner-border-radius);
+  border-end-start-radius: var(--bs-modal-inner-border-radius);
+}
+.modal-footer:dir(rtl) {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
 }
 .modal-footer > * {
   margin: calc(var(--bs-modal-footer-gap) * 0.5);
@@ -5904,8 +5917,7 @@ textarea.form-control-lg {
   }
   .modal-dialog {
     max-width: var(--bs-modal-width);
-    margin-right: auto;
-    margin-left: auto;
+    margin-inline: auto;
   }
   .modal-sm {
     --bs-modal-width: 300px;
@@ -6061,7 +6073,6 @@ textarea.form-control-lg {
   font-style: normal;
   font-weight: 400;
   line-height: 1.6;
-  text-align: left;
   text-align: start;
   text-decoration: none;
   text-shadow: none;
@@ -6171,7 +6182,6 @@ textarea.form-control-lg {
   font-style: normal;
   font-weight: 400;
   line-height: 1.6;
-  text-align: left;
   text-align: start;
   text-decoration: none;
   text-shadow: none;
@@ -7706,27 +7716,27 @@ textarea.form-control-lg {
 }
 
 .start-0 {
-  left: 0 !important;
+  inset-inline-start: 0 !important;
 }
 
 .start-50 {
-  left: 50% !important;
+  inset-inline-start: 50% !important;
 }
 
 .start-100 {
-  left: 100% !important;
+  inset-inline-start: 100% !important;
 }
 
 .end-0 {
-  right: 0 !important;
+  inset-inline-end: 0 !important;
 }
 
 .end-50 {
-  right: 50% !important;
+  inset-inline-end: 50% !important;
 }
 
 .end-100 {
-  right: 100% !important;
+  inset-inline-end: 100% !important;
 }
 
 .translate-middle {
@@ -7758,11 +7768,11 @@ textarea.form-control-lg {
 }
 
 .border-end {
-  border-right: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+  border-inline-end: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }
 
 .border-end-0 {
-  border-right: 0 !important;
+  border-inline-end: 0 !important;
 }
 
 .border-bottom {
@@ -7774,11 +7784,11 @@ textarea.form-control-lg {
 }
 
 .border-start {
-  border-left: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+  border-inline-start: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
 }
 
 .border-start-0 {
-  border-left: 0 !important;
+  border-inline-start: 0 !important;
 }
 
 .border-primary {
@@ -8392,59 +8402,59 @@ textarea.form-control-lg {
 }
 
 .me-0 {
-  margin-right: 0 !important;
+  margin-inline-end: 0 !important;
 }
 
 .me-1 {
-  margin-right: 0.25rem !important;
+  margin-inline-end: 0.25rem !important;
 }
 
 .me-2 {
-  margin-right: 0.5rem !important;
+  margin-inline-end: 0.5rem !important;
 }
 
 .me-3 {
-  margin-right: 0.75rem !important;
+  margin-inline-end: 0.75rem !important;
 }
 
 .me-4 {
-  margin-right: 1rem !important;
+  margin-inline-end: 1rem !important;
 }
 
 .me-5 {
-  margin-right: 1.25rem !important;
+  margin-inline-end: 1.25rem !important;
 }
 
 .me-6 {
-  margin-right: 1.5rem !important;
+  margin-inline-end: 1.5rem !important;
 }
 
 .me-7 {
-  margin-right: 1.75rem !important;
+  margin-inline-end: 1.75rem !important;
 }
 
 .me-8 {
-  margin-right: 2rem !important;
+  margin-inline-end: 2rem !important;
 }
 
 .me-9 {
-  margin-right: 2.25rem !important;
+  margin-inline-end: 2.25rem !important;
 }
 
 .me-10 {
-  margin-right: 2.5rem !important;
+  margin-inline-end: 2.5rem !important;
 }
 
 .me-11 {
-  margin-right: 3rem !important;
+  margin-inline-end: 3rem !important;
 }
 
 .me-12 {
-  margin-right: 3.5rem !important;
+  margin-inline-end: 3.5rem !important;
 }
 
 .me-auto {
-  margin-right: auto !important;
+  margin-inline-end: auto !important;
 }
 
 .mb-0 {
@@ -8504,59 +8514,59 @@ textarea.form-control-lg {
 }
 
 .ms-0 {
-  margin-left: 0 !important;
+  margin-inline-start: 0 !important;
 }
 
 .ms-1 {
-  margin-left: 0.25rem !important;
+  margin-inline-start: 0.25rem !important;
 }
 
 .ms-2 {
-  margin-left: 0.5rem !important;
+  margin-inline-start: 0.5rem !important;
 }
 
 .ms-3 {
-  margin-left: 0.75rem !important;
+  margin-inline-start: 0.75rem !important;
 }
 
 .ms-4 {
-  margin-left: 1rem !important;
+  margin-inline-start: 1rem !important;
 }
 
 .ms-5 {
-  margin-left: 1.25rem !important;
+  margin-inline-start: 1.25rem !important;
 }
 
 .ms-6 {
-  margin-left: 1.5rem !important;
+  margin-inline-start: 1.5rem !important;
 }
 
 .ms-7 {
-  margin-left: 1.75rem !important;
+  margin-inline-start: 1.75rem !important;
 }
 
 .ms-8 {
-  margin-left: 2rem !important;
+  margin-inline-start: 2rem !important;
 }
 
 .ms-9 {
-  margin-left: 2.25rem !important;
+  margin-inline-start: 2.25rem !important;
 }
 
 .ms-10 {
-  margin-left: 2.5rem !important;
+  margin-inline-start: 2.5rem !important;
 }
 
 .ms-11 {
-  margin-left: 3rem !important;
+  margin-inline-start: 3rem !important;
 }
 
 .ms-12 {
-  margin-left: 3.5rem !important;
+  margin-inline-start: 3.5rem !important;
 }
 
 .ms-auto {
-  margin-left: auto !important;
+  margin-inline-start: auto !important;
 }
 
 .p-0 {
@@ -8794,55 +8804,55 @@ textarea.form-control-lg {
 }
 
 .pe-0 {
-  padding-right: 0 !important;
+  padding-inline-end: 0 !important;
 }
 
 .pe-1 {
-  padding-right: 0.25rem !important;
+  padding-inline-end: 0.25rem !important;
 }
 
 .pe-2 {
-  padding-right: 0.5rem !important;
+  padding-inline-end: 0.5rem !important;
 }
 
 .pe-3 {
-  padding-right: 0.75rem !important;
+  padding-inline-end: 0.75rem !important;
 }
 
 .pe-4 {
-  padding-right: 1rem !important;
+  padding-inline-end: 1rem !important;
 }
 
 .pe-5 {
-  padding-right: 1.25rem !important;
+  padding-inline-end: 1.25rem !important;
 }
 
 .pe-6 {
-  padding-right: 1.5rem !important;
+  padding-inline-end: 1.5rem !important;
 }
 
 .pe-7 {
-  padding-right: 1.75rem !important;
+  padding-inline-end: 1.75rem !important;
 }
 
 .pe-8 {
-  padding-right: 2rem !important;
+  padding-inline-end: 2rem !important;
 }
 
 .pe-9 {
-  padding-right: 2.25rem !important;
+  padding-inline-end: 2.25rem !important;
 }
 
 .pe-10 {
-  padding-right: 2.5rem !important;
+  padding-inline-end: 2.5rem !important;
 }
 
 .pe-11 {
-  padding-right: 3rem !important;
+  padding-inline-end: 3rem !important;
 }
 
 .pe-12 {
-  padding-right: 3.5rem !important;
+  padding-inline-end: 3.5rem !important;
 }
 
 .pb-0 {
@@ -8898,55 +8908,55 @@ textarea.form-control-lg {
 }
 
 .ps-0 {
-  padding-left: 0 !important;
+  padding-inline-start: 0 !important;
 }
 
 .ps-1 {
-  padding-left: 0.25rem !important;
+  padding-inline-start: 0.25rem !important;
 }
 
 .ps-2 {
-  padding-left: 0.5rem !important;
+  padding-inline-start: 0.5rem !important;
 }
 
 .ps-3 {
-  padding-left: 0.75rem !important;
+  padding-inline-start: 0.75rem !important;
 }
 
 .ps-4 {
-  padding-left: 1rem !important;
+  padding-inline-start: 1rem !important;
 }
 
 .ps-5 {
-  padding-left: 1.25rem !important;
+  padding-inline-start: 1.25rem !important;
 }
 
 .ps-6 {
-  padding-left: 1.5rem !important;
+  padding-inline-start: 1.5rem !important;
 }
 
 .ps-7 {
-  padding-left: 1.75rem !important;
+  padding-inline-start: 1.75rem !important;
 }
 
 .ps-8 {
-  padding-left: 2rem !important;
+  padding-inline-start: 2rem !important;
 }
 
 .ps-9 {
-  padding-left: 2.25rem !important;
+  padding-inline-start: 2.25rem !important;
 }
 
 .ps-10 {
-  padding-left: 2.5rem !important;
+  padding-inline-start: 2.5rem !important;
 }
 
 .ps-11 {
-  padding-left: 3rem !important;
+  padding-inline-start: 3rem !important;
 }
 
 .ps-12 {
-  padding-left: 3.5rem !important;
+  padding-inline-start: 3.5rem !important;
 }
 
 .gap-0 {
@@ -9186,11 +9196,11 @@ textarea.form-control-lg {
 }
 
 .text-start {
-  text-align: left !important;
+  text-align: start !important;
 }
 
 .text-end {
-  text-align: right !important;
+  text-align: end !important;
 }
 
 .text-center {
@@ -9759,48 +9769,48 @@ textarea.form-control-lg {
 }
 
 .rounded-end {
-  border-top-right-radius: var(--bs-border-radius) !important;
-  border-bottom-right-radius: var(--bs-border-radius) !important;
+  border-start-end-radius: var(--bs-border-radius) !important;
+  border-end-end-radius: var(--bs-border-radius) !important;
 }
 
 .rounded-end-0 {
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
+  border-start-end-radius: 0 !important;
+  border-end-end-radius: 0 !important;
 }
 
 .rounded-end-1 {
-  border-top-right-radius: var(--bs-border-radius-sm) !important;
-  border-bottom-right-radius: var(--bs-border-radius-sm) !important;
+  border-start-end-radius: var(--bs-border-radius-sm) !important;
+  border-end-end-radius: var(--bs-border-radius-sm) !important;
 }
 
 .rounded-end-2 {
-  border-top-right-radius: var(--bs-border-radius) !important;
-  border-bottom-right-radius: var(--bs-border-radius) !important;
+  border-start-end-radius: var(--bs-border-radius) !important;
+  border-end-end-radius: var(--bs-border-radius) !important;
 }
 
 .rounded-end-3 {
-  border-top-right-radius: var(--bs-border-radius-lg) !important;
-  border-bottom-right-radius: var(--bs-border-radius-lg) !important;
+  border-start-end-radius: var(--bs-border-radius-lg) !important;
+  border-end-end-radius: var(--bs-border-radius-lg) !important;
 }
 
 .rounded-end-4 {
-  border-top-right-radius: var(--bs-border-radius-xl) !important;
-  border-bottom-right-radius: var(--bs-border-radius-xl) !important;
+  border-start-end-radius: var(--bs-border-radius-xl) !important;
+  border-end-end-radius: var(--bs-border-radius-xl) !important;
 }
 
 .rounded-end-5 {
-  border-top-right-radius: var(--bs-border-radius-xxl) !important;
-  border-bottom-right-radius: var(--bs-border-radius-xxl) !important;
+  border-start-end-radius: var(--bs-border-radius-xxl) !important;
+  border-end-end-radius: var(--bs-border-radius-xxl) !important;
 }
 
 .rounded-end-circle {
-  border-top-right-radius: 50% !important;
-  border-bottom-right-radius: 50% !important;
+  border-start-end-radius: 50% !important;
+  border-end-end-radius: 50% !important;
 }
 
 .rounded-end-pill {
-  border-top-right-radius: var(--bs-border-radius-pill) !important;
-  border-bottom-right-radius: var(--bs-border-radius-pill) !important;
+  border-start-end-radius: var(--bs-border-radius-pill) !important;
+  border-end-end-radius: var(--bs-border-radius-pill) !important;
 }
 
 .rounded-bottom {
@@ -9849,48 +9859,48 @@ textarea.form-control-lg {
 }
 
 .rounded-start {
-  border-bottom-left-radius: var(--bs-border-radius) !important;
-  border-top-left-radius: var(--bs-border-radius) !important;
+  border-start-start-radius: var(--bs-border-radius) !important;
+  border-end-start-radius: var(--bs-border-radius) !important;
 }
 
 .rounded-start-0 {
-  border-bottom-left-radius: 0 !important;
-  border-top-left-radius: 0 !important;
+  border-start-start-radius: 0 !important;
+  border-end-start-radius: 0 !important;
 }
 
 .rounded-start-1 {
-  border-bottom-left-radius: var(--bs-border-radius-sm) !important;
-  border-top-left-radius: var(--bs-border-radius-sm) !important;
+  border-start-start-radius: var(--bs-border-radius-sm) !important;
+  border-end-start-radius: var(--bs-border-radius-sm) !important;
 }
 
 .rounded-start-2 {
-  border-bottom-left-radius: var(--bs-border-radius) !important;
-  border-top-left-radius: var(--bs-border-radius) !important;
+  border-start-start-radius: var(--bs-border-radius) !important;
+  border-end-start-radius: var(--bs-border-radius) !important;
 }
 
 .rounded-start-3 {
-  border-bottom-left-radius: var(--bs-border-radius-lg) !important;
-  border-top-left-radius: var(--bs-border-radius-lg) !important;
+  border-start-start-radius: var(--bs-border-radius-lg) !important;
+  border-end-start-radius: var(--bs-border-radius-lg) !important;
 }
 
 .rounded-start-4 {
-  border-bottom-left-radius: var(--bs-border-radius-xl) !important;
-  border-top-left-radius: var(--bs-border-radius-xl) !important;
+  border-start-start-radius: var(--bs-border-radius-xl) !important;
+  border-end-start-radius: var(--bs-border-radius-xl) !important;
 }
 
 .rounded-start-5 {
-  border-bottom-left-radius: var(--bs-border-radius-xxl) !important;
-  border-top-left-radius: var(--bs-border-radius-xxl) !important;
+  border-start-start-radius: var(--bs-border-radius-xxl) !important;
+  border-end-start-radius: var(--bs-border-radius-xxl) !important;
 }
 
 .rounded-start-circle {
-  border-bottom-left-radius: 50% !important;
-  border-top-left-radius: 50% !important;
+  border-start-start-radius: 50% !important;
+  border-end-start-radius: 50% !important;
 }
 
 .rounded-start-pill {
-  border-bottom-left-radius: var(--bs-border-radius-pill) !important;
-  border-top-left-radius: var(--bs-border-radius-pill) !important;
+  border-start-start-radius: var(--bs-border-radius-pill) !important;
+  border-end-start-radius: var(--bs-border-radius-pill) !important;
 }
 
 .visible {
@@ -9923,10 +9933,10 @@ textarea.form-control-lg {
 
 @media (min-width: 576px) {
   .float-sm-start {
-    float: left !important;
+    float: inline-start !important;
   }
   .float-sm-end {
-    float: right !important;
+    float: inline-end !important;
   }
   .float-sm-none {
     float: none !important;
@@ -10305,46 +10315,46 @@ textarea.form-control-lg {
     margin-top: auto !important;
   }
   .me-sm-0 {
-    margin-right: 0 !important;
+    margin-inline-end: 0 !important;
   }
   .me-sm-1 {
-    margin-right: 0.25rem !important;
+    margin-inline-end: 0.25rem !important;
   }
   .me-sm-2 {
-    margin-right: 0.5rem !important;
+    margin-inline-end: 0.5rem !important;
   }
   .me-sm-3 {
-    margin-right: 0.75rem !important;
+    margin-inline-end: 0.75rem !important;
   }
   .me-sm-4 {
-    margin-right: 1rem !important;
+    margin-inline-end: 1rem !important;
   }
   .me-sm-5 {
-    margin-right: 1.25rem !important;
+    margin-inline-end: 1.25rem !important;
   }
   .me-sm-6 {
-    margin-right: 1.5rem !important;
+    margin-inline-end: 1.5rem !important;
   }
   .me-sm-7 {
-    margin-right: 1.75rem !important;
+    margin-inline-end: 1.75rem !important;
   }
   .me-sm-8 {
-    margin-right: 2rem !important;
+    margin-inline-end: 2rem !important;
   }
   .me-sm-9 {
-    margin-right: 2.25rem !important;
+    margin-inline-end: 2.25rem !important;
   }
   .me-sm-10 {
-    margin-right: 2.5rem !important;
+    margin-inline-end: 2.5rem !important;
   }
   .me-sm-11 {
-    margin-right: 3rem !important;
+    margin-inline-end: 3rem !important;
   }
   .me-sm-12 {
-    margin-right: 3.5rem !important;
+    margin-inline-end: 3.5rem !important;
   }
   .me-sm-auto {
-    margin-right: auto !important;
+    margin-inline-end: auto !important;
   }
   .mb-sm-0 {
     margin-bottom: 0 !important;
@@ -10389,46 +10399,46 @@ textarea.form-control-lg {
     margin-bottom: auto !important;
   }
   .ms-sm-0 {
-    margin-left: 0 !important;
+    margin-inline-start: 0 !important;
   }
   .ms-sm-1 {
-    margin-left: 0.25rem !important;
+    margin-inline-start: 0.25rem !important;
   }
   .ms-sm-2 {
-    margin-left: 0.5rem !important;
+    margin-inline-start: 0.5rem !important;
   }
   .ms-sm-3 {
-    margin-left: 0.75rem !important;
+    margin-inline-start: 0.75rem !important;
   }
   .ms-sm-4 {
-    margin-left: 1rem !important;
+    margin-inline-start: 1rem !important;
   }
   .ms-sm-5 {
-    margin-left: 1.25rem !important;
+    margin-inline-start: 1.25rem !important;
   }
   .ms-sm-6 {
-    margin-left: 1.5rem !important;
+    margin-inline-start: 1.5rem !important;
   }
   .ms-sm-7 {
-    margin-left: 1.75rem !important;
+    margin-inline-start: 1.75rem !important;
   }
   .ms-sm-8 {
-    margin-left: 2rem !important;
+    margin-inline-start: 2rem !important;
   }
   .ms-sm-9 {
-    margin-left: 2.25rem !important;
+    margin-inline-start: 2.25rem !important;
   }
   .ms-sm-10 {
-    margin-left: 2.5rem !important;
+    margin-inline-start: 2.5rem !important;
   }
   .ms-sm-11 {
-    margin-left: 3rem !important;
+    margin-inline-start: 3rem !important;
   }
   .ms-sm-12 {
-    margin-left: 3.5rem !important;
+    margin-inline-start: 3.5rem !important;
   }
   .ms-sm-auto {
-    margin-left: auto !important;
+    margin-inline-start: auto !important;
   }
   .p-sm-0 {
     padding: 0 !important;
@@ -10613,43 +10623,43 @@ textarea.form-control-lg {
     padding-top: 3.5rem !important;
   }
   .pe-sm-0 {
-    padding-right: 0 !important;
+    padding-inline-end: 0 !important;
   }
   .pe-sm-1 {
-    padding-right: 0.25rem !important;
+    padding-inline-end: 0.25rem !important;
   }
   .pe-sm-2 {
-    padding-right: 0.5rem !important;
+    padding-inline-end: 0.5rem !important;
   }
   .pe-sm-3 {
-    padding-right: 0.75rem !important;
+    padding-inline-end: 0.75rem !important;
   }
   .pe-sm-4 {
-    padding-right: 1rem !important;
+    padding-inline-end: 1rem !important;
   }
   .pe-sm-5 {
-    padding-right: 1.25rem !important;
+    padding-inline-end: 1.25rem !important;
   }
   .pe-sm-6 {
-    padding-right: 1.5rem !important;
+    padding-inline-end: 1.5rem !important;
   }
   .pe-sm-7 {
-    padding-right: 1.75rem !important;
+    padding-inline-end: 1.75rem !important;
   }
   .pe-sm-8 {
-    padding-right: 2rem !important;
+    padding-inline-end: 2rem !important;
   }
   .pe-sm-9 {
-    padding-right: 2.25rem !important;
+    padding-inline-end: 2.25rem !important;
   }
   .pe-sm-10 {
-    padding-right: 2.5rem !important;
+    padding-inline-end: 2.5rem !important;
   }
   .pe-sm-11 {
-    padding-right: 3rem !important;
+    padding-inline-end: 3rem !important;
   }
   .pe-sm-12 {
-    padding-right: 3.5rem !important;
+    padding-inline-end: 3.5rem !important;
   }
   .pb-sm-0 {
     padding-bottom: 0 !important;
@@ -10691,43 +10701,43 @@ textarea.form-control-lg {
     padding-bottom: 3.5rem !important;
   }
   .ps-sm-0 {
-    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
   }
   .ps-sm-1 {
-    padding-left: 0.25rem !important;
+    padding-inline-start: 0.25rem !important;
   }
   .ps-sm-2 {
-    padding-left: 0.5rem !important;
+    padding-inline-start: 0.5rem !important;
   }
   .ps-sm-3 {
-    padding-left: 0.75rem !important;
+    padding-inline-start: 0.75rem !important;
   }
   .ps-sm-4 {
-    padding-left: 1rem !important;
+    padding-inline-start: 1rem !important;
   }
   .ps-sm-5 {
-    padding-left: 1.25rem !important;
+    padding-inline-start: 1.25rem !important;
   }
   .ps-sm-6 {
-    padding-left: 1.5rem !important;
+    padding-inline-start: 1.5rem !important;
   }
   .ps-sm-7 {
-    padding-left: 1.75rem !important;
+    padding-inline-start: 1.75rem !important;
   }
   .ps-sm-8 {
-    padding-left: 2rem !important;
+    padding-inline-start: 2rem !important;
   }
   .ps-sm-9 {
-    padding-left: 2.25rem !important;
+    padding-inline-start: 2.25rem !important;
   }
   .ps-sm-10 {
-    padding-left: 2.5rem !important;
+    padding-inline-start: 2.5rem !important;
   }
   .ps-sm-11 {
-    padding-left: 3rem !important;
+    padding-inline-start: 3rem !important;
   }
   .ps-sm-12 {
-    padding-left: 3.5rem !important;
+    padding-inline-start: 3.5rem !important;
   }
   .gap-sm-0 {
     gap: 0 !important;
@@ -10847,10 +10857,10 @@ textarea.form-control-lg {
     column-gap: 3.5rem !important;
   }
   .text-sm-start {
-    text-align: left !important;
+    text-align: start !important;
   }
   .text-sm-end {
-    text-align: right !important;
+    text-align: end !important;
   }
   .text-sm-center {
     text-align: center !important;
@@ -10858,10 +10868,10 @@ textarea.form-control-lg {
 }
 @media (min-width: 768px) {
   .float-md-start {
-    float: left !important;
+    float: inline-start !important;
   }
   .float-md-end {
-    float: right !important;
+    float: inline-end !important;
   }
   .float-md-none {
     float: none !important;
@@ -11240,46 +11250,46 @@ textarea.form-control-lg {
     margin-top: auto !important;
   }
   .me-md-0 {
-    margin-right: 0 !important;
+    margin-inline-end: 0 !important;
   }
   .me-md-1 {
-    margin-right: 0.25rem !important;
+    margin-inline-end: 0.25rem !important;
   }
   .me-md-2 {
-    margin-right: 0.5rem !important;
+    margin-inline-end: 0.5rem !important;
   }
   .me-md-3 {
-    margin-right: 0.75rem !important;
+    margin-inline-end: 0.75rem !important;
   }
   .me-md-4 {
-    margin-right: 1rem !important;
+    margin-inline-end: 1rem !important;
   }
   .me-md-5 {
-    margin-right: 1.25rem !important;
+    margin-inline-end: 1.25rem !important;
   }
   .me-md-6 {
-    margin-right: 1.5rem !important;
+    margin-inline-end: 1.5rem !important;
   }
   .me-md-7 {
-    margin-right: 1.75rem !important;
+    margin-inline-end: 1.75rem !important;
   }
   .me-md-8 {
-    margin-right: 2rem !important;
+    margin-inline-end: 2rem !important;
   }
   .me-md-9 {
-    margin-right: 2.25rem !important;
+    margin-inline-end: 2.25rem !important;
   }
   .me-md-10 {
-    margin-right: 2.5rem !important;
+    margin-inline-end: 2.5rem !important;
   }
   .me-md-11 {
-    margin-right: 3rem !important;
+    margin-inline-end: 3rem !important;
   }
   .me-md-12 {
-    margin-right: 3.5rem !important;
+    margin-inline-end: 3.5rem !important;
   }
   .me-md-auto {
-    margin-right: auto !important;
+    margin-inline-end: auto !important;
   }
   .mb-md-0 {
     margin-bottom: 0 !important;
@@ -11324,46 +11334,46 @@ textarea.form-control-lg {
     margin-bottom: auto !important;
   }
   .ms-md-0 {
-    margin-left: 0 !important;
+    margin-inline-start: 0 !important;
   }
   .ms-md-1 {
-    margin-left: 0.25rem !important;
+    margin-inline-start: 0.25rem !important;
   }
   .ms-md-2 {
-    margin-left: 0.5rem !important;
+    margin-inline-start: 0.5rem !important;
   }
   .ms-md-3 {
-    margin-left: 0.75rem !important;
+    margin-inline-start: 0.75rem !important;
   }
   .ms-md-4 {
-    margin-left: 1rem !important;
+    margin-inline-start: 1rem !important;
   }
   .ms-md-5 {
-    margin-left: 1.25rem !important;
+    margin-inline-start: 1.25rem !important;
   }
   .ms-md-6 {
-    margin-left: 1.5rem !important;
+    margin-inline-start: 1.5rem !important;
   }
   .ms-md-7 {
-    margin-left: 1.75rem !important;
+    margin-inline-start: 1.75rem !important;
   }
   .ms-md-8 {
-    margin-left: 2rem !important;
+    margin-inline-start: 2rem !important;
   }
   .ms-md-9 {
-    margin-left: 2.25rem !important;
+    margin-inline-start: 2.25rem !important;
   }
   .ms-md-10 {
-    margin-left: 2.5rem !important;
+    margin-inline-start: 2.5rem !important;
   }
   .ms-md-11 {
-    margin-left: 3rem !important;
+    margin-inline-start: 3rem !important;
   }
   .ms-md-12 {
-    margin-left: 3.5rem !important;
+    margin-inline-start: 3.5rem !important;
   }
   .ms-md-auto {
-    margin-left: auto !important;
+    margin-inline-start: auto !important;
   }
   .p-md-0 {
     padding: 0 !important;
@@ -11548,43 +11558,43 @@ textarea.form-control-lg {
     padding-top: 3.5rem !important;
   }
   .pe-md-0 {
-    padding-right: 0 !important;
+    padding-inline-end: 0 !important;
   }
   .pe-md-1 {
-    padding-right: 0.25rem !important;
+    padding-inline-end: 0.25rem !important;
   }
   .pe-md-2 {
-    padding-right: 0.5rem !important;
+    padding-inline-end: 0.5rem !important;
   }
   .pe-md-3 {
-    padding-right: 0.75rem !important;
+    padding-inline-end: 0.75rem !important;
   }
   .pe-md-4 {
-    padding-right: 1rem !important;
+    padding-inline-end: 1rem !important;
   }
   .pe-md-5 {
-    padding-right: 1.25rem !important;
+    padding-inline-end: 1.25rem !important;
   }
   .pe-md-6 {
-    padding-right: 1.5rem !important;
+    padding-inline-end: 1.5rem !important;
   }
   .pe-md-7 {
-    padding-right: 1.75rem !important;
+    padding-inline-end: 1.75rem !important;
   }
   .pe-md-8 {
-    padding-right: 2rem !important;
+    padding-inline-end: 2rem !important;
   }
   .pe-md-9 {
-    padding-right: 2.25rem !important;
+    padding-inline-end: 2.25rem !important;
   }
   .pe-md-10 {
-    padding-right: 2.5rem !important;
+    padding-inline-end: 2.5rem !important;
   }
   .pe-md-11 {
-    padding-right: 3rem !important;
+    padding-inline-end: 3rem !important;
   }
   .pe-md-12 {
-    padding-right: 3.5rem !important;
+    padding-inline-end: 3.5rem !important;
   }
   .pb-md-0 {
     padding-bottom: 0 !important;
@@ -11626,43 +11636,43 @@ textarea.form-control-lg {
     padding-bottom: 3.5rem !important;
   }
   .ps-md-0 {
-    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
   }
   .ps-md-1 {
-    padding-left: 0.25rem !important;
+    padding-inline-start: 0.25rem !important;
   }
   .ps-md-2 {
-    padding-left: 0.5rem !important;
+    padding-inline-start: 0.5rem !important;
   }
   .ps-md-3 {
-    padding-left: 0.75rem !important;
+    padding-inline-start: 0.75rem !important;
   }
   .ps-md-4 {
-    padding-left: 1rem !important;
+    padding-inline-start: 1rem !important;
   }
   .ps-md-5 {
-    padding-left: 1.25rem !important;
+    padding-inline-start: 1.25rem !important;
   }
   .ps-md-6 {
-    padding-left: 1.5rem !important;
+    padding-inline-start: 1.5rem !important;
   }
   .ps-md-7 {
-    padding-left: 1.75rem !important;
+    padding-inline-start: 1.75rem !important;
   }
   .ps-md-8 {
-    padding-left: 2rem !important;
+    padding-inline-start: 2rem !important;
   }
   .ps-md-9 {
-    padding-left: 2.25rem !important;
+    padding-inline-start: 2.25rem !important;
   }
   .ps-md-10 {
-    padding-left: 2.5rem !important;
+    padding-inline-start: 2.5rem !important;
   }
   .ps-md-11 {
-    padding-left: 3rem !important;
+    padding-inline-start: 3rem !important;
   }
   .ps-md-12 {
-    padding-left: 3.5rem !important;
+    padding-inline-start: 3.5rem !important;
   }
   .gap-md-0 {
     gap: 0 !important;
@@ -11782,10 +11792,10 @@ textarea.form-control-lg {
     column-gap: 3.5rem !important;
   }
   .text-md-start {
-    text-align: left !important;
+    text-align: start !important;
   }
   .text-md-end {
-    text-align: right !important;
+    text-align: end !important;
   }
   .text-md-center {
     text-align: center !important;
@@ -11793,10 +11803,10 @@ textarea.form-control-lg {
 }
 @media (min-width: 992px) {
   .float-lg-start {
-    float: left !important;
+    float: inline-start !important;
   }
   .float-lg-end {
-    float: right !important;
+    float: inline-end !important;
   }
   .float-lg-none {
     float: none !important;
@@ -12175,46 +12185,46 @@ textarea.form-control-lg {
     margin-top: auto !important;
   }
   .me-lg-0 {
-    margin-right: 0 !important;
+    margin-inline-end: 0 !important;
   }
   .me-lg-1 {
-    margin-right: 0.25rem !important;
+    margin-inline-end: 0.25rem !important;
   }
   .me-lg-2 {
-    margin-right: 0.5rem !important;
+    margin-inline-end: 0.5rem !important;
   }
   .me-lg-3 {
-    margin-right: 0.75rem !important;
+    margin-inline-end: 0.75rem !important;
   }
   .me-lg-4 {
-    margin-right: 1rem !important;
+    margin-inline-end: 1rem !important;
   }
   .me-lg-5 {
-    margin-right: 1.25rem !important;
+    margin-inline-end: 1.25rem !important;
   }
   .me-lg-6 {
-    margin-right: 1.5rem !important;
+    margin-inline-end: 1.5rem !important;
   }
   .me-lg-7 {
-    margin-right: 1.75rem !important;
+    margin-inline-end: 1.75rem !important;
   }
   .me-lg-8 {
-    margin-right: 2rem !important;
+    margin-inline-end: 2rem !important;
   }
   .me-lg-9 {
-    margin-right: 2.25rem !important;
+    margin-inline-end: 2.25rem !important;
   }
   .me-lg-10 {
-    margin-right: 2.5rem !important;
+    margin-inline-end: 2.5rem !important;
   }
   .me-lg-11 {
-    margin-right: 3rem !important;
+    margin-inline-end: 3rem !important;
   }
   .me-lg-12 {
-    margin-right: 3.5rem !important;
+    margin-inline-end: 3.5rem !important;
   }
   .me-lg-auto {
-    margin-right: auto !important;
+    margin-inline-end: auto !important;
   }
   .mb-lg-0 {
     margin-bottom: 0 !important;
@@ -12259,46 +12269,46 @@ textarea.form-control-lg {
     margin-bottom: auto !important;
   }
   .ms-lg-0 {
-    margin-left: 0 !important;
+    margin-inline-start: 0 !important;
   }
   .ms-lg-1 {
-    margin-left: 0.25rem !important;
+    margin-inline-start: 0.25rem !important;
   }
   .ms-lg-2 {
-    margin-left: 0.5rem !important;
+    margin-inline-start: 0.5rem !important;
   }
   .ms-lg-3 {
-    margin-left: 0.75rem !important;
+    margin-inline-start: 0.75rem !important;
   }
   .ms-lg-4 {
-    margin-left: 1rem !important;
+    margin-inline-start: 1rem !important;
   }
   .ms-lg-5 {
-    margin-left: 1.25rem !important;
+    margin-inline-start: 1.25rem !important;
   }
   .ms-lg-6 {
-    margin-left: 1.5rem !important;
+    margin-inline-start: 1.5rem !important;
   }
   .ms-lg-7 {
-    margin-left: 1.75rem !important;
+    margin-inline-start: 1.75rem !important;
   }
   .ms-lg-8 {
-    margin-left: 2rem !important;
+    margin-inline-start: 2rem !important;
   }
   .ms-lg-9 {
-    margin-left: 2.25rem !important;
+    margin-inline-start: 2.25rem !important;
   }
   .ms-lg-10 {
-    margin-left: 2.5rem !important;
+    margin-inline-start: 2.5rem !important;
   }
   .ms-lg-11 {
-    margin-left: 3rem !important;
+    margin-inline-start: 3rem !important;
   }
   .ms-lg-12 {
-    margin-left: 3.5rem !important;
+    margin-inline-start: 3.5rem !important;
   }
   .ms-lg-auto {
-    margin-left: auto !important;
+    margin-inline-start: auto !important;
   }
   .p-lg-0 {
     padding: 0 !important;
@@ -12483,43 +12493,43 @@ textarea.form-control-lg {
     padding-top: 3.5rem !important;
   }
   .pe-lg-0 {
-    padding-right: 0 !important;
+    padding-inline-end: 0 !important;
   }
   .pe-lg-1 {
-    padding-right: 0.25rem !important;
+    padding-inline-end: 0.25rem !important;
   }
   .pe-lg-2 {
-    padding-right: 0.5rem !important;
+    padding-inline-end: 0.5rem !important;
   }
   .pe-lg-3 {
-    padding-right: 0.75rem !important;
+    padding-inline-end: 0.75rem !important;
   }
   .pe-lg-4 {
-    padding-right: 1rem !important;
+    padding-inline-end: 1rem !important;
   }
   .pe-lg-5 {
-    padding-right: 1.25rem !important;
+    padding-inline-end: 1.25rem !important;
   }
   .pe-lg-6 {
-    padding-right: 1.5rem !important;
+    padding-inline-end: 1.5rem !important;
   }
   .pe-lg-7 {
-    padding-right: 1.75rem !important;
+    padding-inline-end: 1.75rem !important;
   }
   .pe-lg-8 {
-    padding-right: 2rem !important;
+    padding-inline-end: 2rem !important;
   }
   .pe-lg-9 {
-    padding-right: 2.25rem !important;
+    padding-inline-end: 2.25rem !important;
   }
   .pe-lg-10 {
-    padding-right: 2.5rem !important;
+    padding-inline-end: 2.5rem !important;
   }
   .pe-lg-11 {
-    padding-right: 3rem !important;
+    padding-inline-end: 3rem !important;
   }
   .pe-lg-12 {
-    padding-right: 3.5rem !important;
+    padding-inline-end: 3.5rem !important;
   }
   .pb-lg-0 {
     padding-bottom: 0 !important;
@@ -12561,43 +12571,43 @@ textarea.form-control-lg {
     padding-bottom: 3.5rem !important;
   }
   .ps-lg-0 {
-    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
   }
   .ps-lg-1 {
-    padding-left: 0.25rem !important;
+    padding-inline-start: 0.25rem !important;
   }
   .ps-lg-2 {
-    padding-left: 0.5rem !important;
+    padding-inline-start: 0.5rem !important;
   }
   .ps-lg-3 {
-    padding-left: 0.75rem !important;
+    padding-inline-start: 0.75rem !important;
   }
   .ps-lg-4 {
-    padding-left: 1rem !important;
+    padding-inline-start: 1rem !important;
   }
   .ps-lg-5 {
-    padding-left: 1.25rem !important;
+    padding-inline-start: 1.25rem !important;
   }
   .ps-lg-6 {
-    padding-left: 1.5rem !important;
+    padding-inline-start: 1.5rem !important;
   }
   .ps-lg-7 {
-    padding-left: 1.75rem !important;
+    padding-inline-start: 1.75rem !important;
   }
   .ps-lg-8 {
-    padding-left: 2rem !important;
+    padding-inline-start: 2rem !important;
   }
   .ps-lg-9 {
-    padding-left: 2.25rem !important;
+    padding-inline-start: 2.25rem !important;
   }
   .ps-lg-10 {
-    padding-left: 2.5rem !important;
+    padding-inline-start: 2.5rem !important;
   }
   .ps-lg-11 {
-    padding-left: 3rem !important;
+    padding-inline-start: 3rem !important;
   }
   .ps-lg-12 {
-    padding-left: 3.5rem !important;
+    padding-inline-start: 3.5rem !important;
   }
   .gap-lg-0 {
     gap: 0 !important;
@@ -12717,10 +12727,10 @@ textarea.form-control-lg {
     column-gap: 3.5rem !important;
   }
   .text-lg-start {
-    text-align: left !important;
+    text-align: start !important;
   }
   .text-lg-end {
-    text-align: right !important;
+    text-align: end !important;
   }
   .text-lg-center {
     text-align: center !important;
@@ -12728,10 +12738,10 @@ textarea.form-control-lg {
 }
 @media (min-width: 1200px) {
   .float-xl-start {
-    float: left !important;
+    float: inline-start !important;
   }
   .float-xl-end {
-    float: right !important;
+    float: inline-end !important;
   }
   .float-xl-none {
     float: none !important;
@@ -13110,46 +13120,46 @@ textarea.form-control-lg {
     margin-top: auto !important;
   }
   .me-xl-0 {
-    margin-right: 0 !important;
+    margin-inline-end: 0 !important;
   }
   .me-xl-1 {
-    margin-right: 0.25rem !important;
+    margin-inline-end: 0.25rem !important;
   }
   .me-xl-2 {
-    margin-right: 0.5rem !important;
+    margin-inline-end: 0.5rem !important;
   }
   .me-xl-3 {
-    margin-right: 0.75rem !important;
+    margin-inline-end: 0.75rem !important;
   }
   .me-xl-4 {
-    margin-right: 1rem !important;
+    margin-inline-end: 1rem !important;
   }
   .me-xl-5 {
-    margin-right: 1.25rem !important;
+    margin-inline-end: 1.25rem !important;
   }
   .me-xl-6 {
-    margin-right: 1.5rem !important;
+    margin-inline-end: 1.5rem !important;
   }
   .me-xl-7 {
-    margin-right: 1.75rem !important;
+    margin-inline-end: 1.75rem !important;
   }
   .me-xl-8 {
-    margin-right: 2rem !important;
+    margin-inline-end: 2rem !important;
   }
   .me-xl-9 {
-    margin-right: 2.25rem !important;
+    margin-inline-end: 2.25rem !important;
   }
   .me-xl-10 {
-    margin-right: 2.5rem !important;
+    margin-inline-end: 2.5rem !important;
   }
   .me-xl-11 {
-    margin-right: 3rem !important;
+    margin-inline-end: 3rem !important;
   }
   .me-xl-12 {
-    margin-right: 3.5rem !important;
+    margin-inline-end: 3.5rem !important;
   }
   .me-xl-auto {
-    margin-right: auto !important;
+    margin-inline-end: auto !important;
   }
   .mb-xl-0 {
     margin-bottom: 0 !important;
@@ -13194,46 +13204,46 @@ textarea.form-control-lg {
     margin-bottom: auto !important;
   }
   .ms-xl-0 {
-    margin-left: 0 !important;
+    margin-inline-start: 0 !important;
   }
   .ms-xl-1 {
-    margin-left: 0.25rem !important;
+    margin-inline-start: 0.25rem !important;
   }
   .ms-xl-2 {
-    margin-left: 0.5rem !important;
+    margin-inline-start: 0.5rem !important;
   }
   .ms-xl-3 {
-    margin-left: 0.75rem !important;
+    margin-inline-start: 0.75rem !important;
   }
   .ms-xl-4 {
-    margin-left: 1rem !important;
+    margin-inline-start: 1rem !important;
   }
   .ms-xl-5 {
-    margin-left: 1.25rem !important;
+    margin-inline-start: 1.25rem !important;
   }
   .ms-xl-6 {
-    margin-left: 1.5rem !important;
+    margin-inline-start: 1.5rem !important;
   }
   .ms-xl-7 {
-    margin-left: 1.75rem !important;
+    margin-inline-start: 1.75rem !important;
   }
   .ms-xl-8 {
-    margin-left: 2rem !important;
+    margin-inline-start: 2rem !important;
   }
   .ms-xl-9 {
-    margin-left: 2.25rem !important;
+    margin-inline-start: 2.25rem !important;
   }
   .ms-xl-10 {
-    margin-left: 2.5rem !important;
+    margin-inline-start: 2.5rem !important;
   }
   .ms-xl-11 {
-    margin-left: 3rem !important;
+    margin-inline-start: 3rem !important;
   }
   .ms-xl-12 {
-    margin-left: 3.5rem !important;
+    margin-inline-start: 3.5rem !important;
   }
   .ms-xl-auto {
-    margin-left: auto !important;
+    margin-inline-start: auto !important;
   }
   .p-xl-0 {
     padding: 0 !important;
@@ -13418,43 +13428,43 @@ textarea.form-control-lg {
     padding-top: 3.5rem !important;
   }
   .pe-xl-0 {
-    padding-right: 0 !important;
+    padding-inline-end: 0 !important;
   }
   .pe-xl-1 {
-    padding-right: 0.25rem !important;
+    padding-inline-end: 0.25rem !important;
   }
   .pe-xl-2 {
-    padding-right: 0.5rem !important;
+    padding-inline-end: 0.5rem !important;
   }
   .pe-xl-3 {
-    padding-right: 0.75rem !important;
+    padding-inline-end: 0.75rem !important;
   }
   .pe-xl-4 {
-    padding-right: 1rem !important;
+    padding-inline-end: 1rem !important;
   }
   .pe-xl-5 {
-    padding-right: 1.25rem !important;
+    padding-inline-end: 1.25rem !important;
   }
   .pe-xl-6 {
-    padding-right: 1.5rem !important;
+    padding-inline-end: 1.5rem !important;
   }
   .pe-xl-7 {
-    padding-right: 1.75rem !important;
+    padding-inline-end: 1.75rem !important;
   }
   .pe-xl-8 {
-    padding-right: 2rem !important;
+    padding-inline-end: 2rem !important;
   }
   .pe-xl-9 {
-    padding-right: 2.25rem !important;
+    padding-inline-end: 2.25rem !important;
   }
   .pe-xl-10 {
-    padding-right: 2.5rem !important;
+    padding-inline-end: 2.5rem !important;
   }
   .pe-xl-11 {
-    padding-right: 3rem !important;
+    padding-inline-end: 3rem !important;
   }
   .pe-xl-12 {
-    padding-right: 3.5rem !important;
+    padding-inline-end: 3.5rem !important;
   }
   .pb-xl-0 {
     padding-bottom: 0 !important;
@@ -13496,43 +13506,43 @@ textarea.form-control-lg {
     padding-bottom: 3.5rem !important;
   }
   .ps-xl-0 {
-    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
   }
   .ps-xl-1 {
-    padding-left: 0.25rem !important;
+    padding-inline-start: 0.25rem !important;
   }
   .ps-xl-2 {
-    padding-left: 0.5rem !important;
+    padding-inline-start: 0.5rem !important;
   }
   .ps-xl-3 {
-    padding-left: 0.75rem !important;
+    padding-inline-start: 0.75rem !important;
   }
   .ps-xl-4 {
-    padding-left: 1rem !important;
+    padding-inline-start: 1rem !important;
   }
   .ps-xl-5 {
-    padding-left: 1.25rem !important;
+    padding-inline-start: 1.25rem !important;
   }
   .ps-xl-6 {
-    padding-left: 1.5rem !important;
+    padding-inline-start: 1.5rem !important;
   }
   .ps-xl-7 {
-    padding-left: 1.75rem !important;
+    padding-inline-start: 1.75rem !important;
   }
   .ps-xl-8 {
-    padding-left: 2rem !important;
+    padding-inline-start: 2rem !important;
   }
   .ps-xl-9 {
-    padding-left: 2.25rem !important;
+    padding-inline-start: 2.25rem !important;
   }
   .ps-xl-10 {
-    padding-left: 2.5rem !important;
+    padding-inline-start: 2.5rem !important;
   }
   .ps-xl-11 {
-    padding-left: 3rem !important;
+    padding-inline-start: 3rem !important;
   }
   .ps-xl-12 {
-    padding-left: 3.5rem !important;
+    padding-inline-start: 3.5rem !important;
   }
   .gap-xl-0 {
     gap: 0 !important;
@@ -13652,10 +13662,10 @@ textarea.form-control-lg {
     column-gap: 3.5rem !important;
   }
   .text-xl-start {
-    text-align: left !important;
+    text-align: start !important;
   }
   .text-xl-end {
-    text-align: right !important;
+    text-align: end !important;
   }
   .text-xl-center {
     text-align: center !important;
@@ -13663,10 +13673,10 @@ textarea.form-control-lg {
 }
 @media (min-width: 1400px) {
   .float-xxl-start {
-    float: left !important;
+    float: inline-start !important;
   }
   .float-xxl-end {
-    float: right !important;
+    float: inline-end !important;
   }
   .float-xxl-none {
     float: none !important;
@@ -14045,46 +14055,46 @@ textarea.form-control-lg {
     margin-top: auto !important;
   }
   .me-xxl-0 {
-    margin-right: 0 !important;
+    margin-inline-end: 0 !important;
   }
   .me-xxl-1 {
-    margin-right: 0.25rem !important;
+    margin-inline-end: 0.25rem !important;
   }
   .me-xxl-2 {
-    margin-right: 0.5rem !important;
+    margin-inline-end: 0.5rem !important;
   }
   .me-xxl-3 {
-    margin-right: 0.75rem !important;
+    margin-inline-end: 0.75rem !important;
   }
   .me-xxl-4 {
-    margin-right: 1rem !important;
+    margin-inline-end: 1rem !important;
   }
   .me-xxl-5 {
-    margin-right: 1.25rem !important;
+    margin-inline-end: 1.25rem !important;
   }
   .me-xxl-6 {
-    margin-right: 1.5rem !important;
+    margin-inline-end: 1.5rem !important;
   }
   .me-xxl-7 {
-    margin-right: 1.75rem !important;
+    margin-inline-end: 1.75rem !important;
   }
   .me-xxl-8 {
-    margin-right: 2rem !important;
+    margin-inline-end: 2rem !important;
   }
   .me-xxl-9 {
-    margin-right: 2.25rem !important;
+    margin-inline-end: 2.25rem !important;
   }
   .me-xxl-10 {
-    margin-right: 2.5rem !important;
+    margin-inline-end: 2.5rem !important;
   }
   .me-xxl-11 {
-    margin-right: 3rem !important;
+    margin-inline-end: 3rem !important;
   }
   .me-xxl-12 {
-    margin-right: 3.5rem !important;
+    margin-inline-end: 3.5rem !important;
   }
   .me-xxl-auto {
-    margin-right: auto !important;
+    margin-inline-end: auto !important;
   }
   .mb-xxl-0 {
     margin-bottom: 0 !important;
@@ -14129,46 +14139,46 @@ textarea.form-control-lg {
     margin-bottom: auto !important;
   }
   .ms-xxl-0 {
-    margin-left: 0 !important;
+    margin-inline-start: 0 !important;
   }
   .ms-xxl-1 {
-    margin-left: 0.25rem !important;
+    margin-inline-start: 0.25rem !important;
   }
   .ms-xxl-2 {
-    margin-left: 0.5rem !important;
+    margin-inline-start: 0.5rem !important;
   }
   .ms-xxl-3 {
-    margin-left: 0.75rem !important;
+    margin-inline-start: 0.75rem !important;
   }
   .ms-xxl-4 {
-    margin-left: 1rem !important;
+    margin-inline-start: 1rem !important;
   }
   .ms-xxl-5 {
-    margin-left: 1.25rem !important;
+    margin-inline-start: 1.25rem !important;
   }
   .ms-xxl-6 {
-    margin-left: 1.5rem !important;
+    margin-inline-start: 1.5rem !important;
   }
   .ms-xxl-7 {
-    margin-left: 1.75rem !important;
+    margin-inline-start: 1.75rem !important;
   }
   .ms-xxl-8 {
-    margin-left: 2rem !important;
+    margin-inline-start: 2rem !important;
   }
   .ms-xxl-9 {
-    margin-left: 2.25rem !important;
+    margin-inline-start: 2.25rem !important;
   }
   .ms-xxl-10 {
-    margin-left: 2.5rem !important;
+    margin-inline-start: 2.5rem !important;
   }
   .ms-xxl-11 {
-    margin-left: 3rem !important;
+    margin-inline-start: 3rem !important;
   }
   .ms-xxl-12 {
-    margin-left: 3.5rem !important;
+    margin-inline-start: 3.5rem !important;
   }
   .ms-xxl-auto {
-    margin-left: auto !important;
+    margin-inline-start: auto !important;
   }
   .p-xxl-0 {
     padding: 0 !important;
@@ -14353,43 +14363,43 @@ textarea.form-control-lg {
     padding-top: 3.5rem !important;
   }
   .pe-xxl-0 {
-    padding-right: 0 !important;
+    padding-inline-end: 0 !important;
   }
   .pe-xxl-1 {
-    padding-right: 0.25rem !important;
+    padding-inline-end: 0.25rem !important;
   }
   .pe-xxl-2 {
-    padding-right: 0.5rem !important;
+    padding-inline-end: 0.5rem !important;
   }
   .pe-xxl-3 {
-    padding-right: 0.75rem !important;
+    padding-inline-end: 0.75rem !important;
   }
   .pe-xxl-4 {
-    padding-right: 1rem !important;
+    padding-inline-end: 1rem !important;
   }
   .pe-xxl-5 {
-    padding-right: 1.25rem !important;
+    padding-inline-end: 1.25rem !important;
   }
   .pe-xxl-6 {
-    padding-right: 1.5rem !important;
+    padding-inline-end: 1.5rem !important;
   }
   .pe-xxl-7 {
-    padding-right: 1.75rem !important;
+    padding-inline-end: 1.75rem !important;
   }
   .pe-xxl-8 {
-    padding-right: 2rem !important;
+    padding-inline-end: 2rem !important;
   }
   .pe-xxl-9 {
-    padding-right: 2.25rem !important;
+    padding-inline-end: 2.25rem !important;
   }
   .pe-xxl-10 {
-    padding-right: 2.5rem !important;
+    padding-inline-end: 2.5rem !important;
   }
   .pe-xxl-11 {
-    padding-right: 3rem !important;
+    padding-inline-end: 3rem !important;
   }
   .pe-xxl-12 {
-    padding-right: 3.5rem !important;
+    padding-inline-end: 3.5rem !important;
   }
   .pb-xxl-0 {
     padding-bottom: 0 !important;
@@ -14431,43 +14441,43 @@ textarea.form-control-lg {
     padding-bottom: 3.5rem !important;
   }
   .ps-xxl-0 {
-    padding-left: 0 !important;
+    padding-inline-start: 0 !important;
   }
   .ps-xxl-1 {
-    padding-left: 0.25rem !important;
+    padding-inline-start: 0.25rem !important;
   }
   .ps-xxl-2 {
-    padding-left: 0.5rem !important;
+    padding-inline-start: 0.5rem !important;
   }
   .ps-xxl-3 {
-    padding-left: 0.75rem !important;
+    padding-inline-start: 0.75rem !important;
   }
   .ps-xxl-4 {
-    padding-left: 1rem !important;
+    padding-inline-start: 1rem !important;
   }
   .ps-xxl-5 {
-    padding-left: 1.25rem !important;
+    padding-inline-start: 1.25rem !important;
   }
   .ps-xxl-6 {
-    padding-left: 1.5rem !important;
+    padding-inline-start: 1.5rem !important;
   }
   .ps-xxl-7 {
-    padding-left: 1.75rem !important;
+    padding-inline-start: 1.75rem !important;
   }
   .ps-xxl-8 {
-    padding-left: 2rem !important;
+    padding-inline-start: 2rem !important;
   }
   .ps-xxl-9 {
-    padding-left: 2.25rem !important;
+    padding-inline-start: 2.25rem !important;
   }
   .ps-xxl-10 {
-    padding-left: 2.5rem !important;
+    padding-inline-start: 2.5rem !important;
   }
   .ps-xxl-11 {
-    padding-left: 3rem !important;
+    padding-inline-start: 3rem !important;
   }
   .ps-xxl-12 {
-    padding-left: 3.5rem !important;
+    padding-inline-start: 3.5rem !important;
   }
   .gap-xxl-0 {
     gap: 0 !important;
@@ -14587,10 +14597,10 @@ textarea.form-control-lg {
     column-gap: 3.5rem !important;
   }
   .text-xxl-start {
-    text-align: left !important;
+    text-align: start !important;
   }
   .text-xxl-end {
-    text-align: right !important;
+    text-align: end !important;
   }
   .text-xxl-center {
     text-align: center !important;
@@ -14719,6 +14729,35 @@ textarea.form-control-lg {
 [dir="rtl"] .admin-wrapper.sidebar-collapsed .reports-page .hamburger-menu {
   left: auto;
   right: 1rem;
+}
+
+.form-switch .form-check-input:dir(rtl) {
+  background-position: right center;
+}
+.form-switch .form-check-input:checked:dir(rtl) {
+  background-position: left center;
+}
+
+/* Modals (computed RTL only — LTR modal-content skips these via :dir) */
+.modal-title:dir(rtl) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-direction: row-reverse;
+}
+.modal .btn-group:dir(rtl) > .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  flex-direction: row-reverse;
+}
+.modal .modal-footer:dir(rtl) .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  flex-direction: row-reverse;
 }
 
 .card {
@@ -15112,8 +15151,8 @@ textarea.form-control-lg {
   opacity: 0.65;
   transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
 }
-[dir="rtl"] .form-group.floating-label .form-control:focus ~ .form-label,
-[dir="rtl"] .form-group.floating-label .form-control:not(:placeholder-shown) ~ .form-label {
+.form-group.floating-label .form-control:focus:dir(rtl) ~ .form-label,
+.form-group.floating-label .form-control:not(:placeholder-shown):dir(rtl) ~ .form-label {
   transform: scale(0.85) translateY(-0.5rem) translateX(-0.15rem);
 }
 .form-group.floating-label .form-label {
@@ -15130,12 +15169,12 @@ textarea.form-control-lg {
   z-index: 2;
   text-align: start;
 }
-[dir="rtl"] .form-group.floating-label .form-label {
+.form-group.floating-label .form-label:dir(rtl) {
   transform-origin: 100% 0;
 }
 
-[dir="rtl"] .form-control:not([type="file"]),
-[dir="rtl"] .form-select {
+.form-control:dir(rtl):not([type="file"]),
+.form-select:dir(rtl) {
   text-align: start;
 }
 
@@ -15151,8 +15190,8 @@ textarea.form-control-lg {
   background-size: 1rem;
   animation: spin 1s linear infinite;
 }
-[dir="rtl"] .form-control.validating,
-[dir="rtl"] .form-select.validating {
+.form-control.validating:dir(rtl),
+.form-select.validating:dir(rtl) {
   background-position: left 0.75rem center;
 }
 .form-control.is-valid-realtime,
@@ -15164,8 +15203,8 @@ textarea.form-control-lg {
   background-position: right calc(0.375em + 0.1875rem) center;
   background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
-[dir="rtl"] .form-control.is-valid-realtime,
-[dir="rtl"] .form-select.is-valid-realtime {
+.form-control.is-valid-realtime:dir(rtl),
+.form-select.is-valid-realtime:dir(rtl) {
   background-position: left calc(0.375em + 0.1875rem) center;
 }
 .form-control.is-valid-realtime:focus,
@@ -15182,8 +15221,8 @@ textarea.form-control-lg {
   background-position: right calc(0.375em + 0.1875rem) center;
   background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
-[dir="rtl"] .form-control.is-invalid-realtime,
-[dir="rtl"] .form-select.is-invalid-realtime {
+.form-control.is-invalid-realtime:dir(rtl),
+.form-select.is-invalid-realtime:dir(rtl) {
   background-position: left calc(0.375em + 0.1875rem) center;
 }
 .form-control.is-invalid-realtime:focus,
@@ -15227,13 +15266,13 @@ textarea.form-control-lg {
   position: relative;
 }
 .form-wizard .wizard-nav .wizard-step:not(:last-child) {
-  margin-right: 2rem;
+  margin-inline-end: 2rem;
 }
 .form-wizard .wizard-nav .wizard-step:not(:last-child)::after {
   content: "";
   position: absolute;
   top: 1rem;
-  right: -1.25rem;
+  inset-inline-end: -1.25rem;
   width: 1rem;
   height: 2px;
   background: var(--bs-border-color);
@@ -15251,7 +15290,7 @@ textarea.form-control-lg {
   border-radius: 50%;
   background: var(--bs-light);
   border: 2px solid var(--bs-border-color);
-  margin-right: 0.5rem;
+  margin-inline-end: 0.5rem;
   font-weight: 600;
   transition: all 0.3s ease;
 }
@@ -15294,6 +15333,9 @@ textarea.form-control-lg {
 }
 .form-wizard .wizard-actions .btn {
   min-width: 120px;
+}
+.form-wizard:dir(rtl) .wizard-actions {
+  flex-direction: row-reverse;
 }
 
 .file-upload-zone {
@@ -15786,6 +15828,27 @@ textarea.form-control-lg {
   width: 1rem;
   text-align: center;
 }
+
+/* RTL: pack label+icon toward inline-start; neutralize me-* on icons (use gap) */
+.dropdown-menu:dir(rtl) > li > .dropdown-item,
+.dropdown-menu:dir(rtl) .dropdown-item:not(.dropdown-item-text) {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+.dropdown-menu:dir(rtl) .dropdown-item > i,
+.dropdown-menu:dir(rtl) .dropdown-item > .bi {
+  flex-shrink: 0;
+  margin-inline-start: 0 !important;
+  margin-inline-end: 0 !important;
+}
+.dropdown-menu:dir(rtl) .dropdown-item .me-1,
+.dropdown-menu:dir(rtl) .dropdown-item .me-2,
+.dropdown-menu:dir(rtl) .dropdown-item .me-3 {
+  margin-inline-end: 0 !important;
+}
+
 .dropdown-menu .dropdown-divider {
   margin: 0.5rem 0;
 }
@@ -17651,7 +17714,7 @@ textarea.form-control-lg {
   color: white !important;
 }
 .messages-page .message.own-message .message-info {
-  text-align: right;
+  text-align: end;
 }
 .messages-page .message.own-message .message-info .message-time,
 .messages-page .message.own-message .message-info .message-status {
@@ -19934,7 +19997,7 @@ textarea.form-control-lg {
   margin: 0;
 }
 .analytics-page .traffic-sources .source-item .source-stats {
-  text-align: right;
+  text-align: end;
 }
 .analytics-page .traffic-sources .source-item .source-stats .source-visitors {
   font-weight: 600;
@@ -20020,7 +20083,7 @@ textarea.form-control-lg {
 }
 .analytics-page .top-pages .page-item .page-stats {
   flex-shrink: 0;
-  text-align: right;
+  text-align: end;
 }
 .analytics-page .top-pages .page-item .page-stats .page-views {
   font-weight: 600;
@@ -20121,7 +20184,7 @@ textarea.form-control-lg {
   display: block;
   text-decoration: none;
   width: 100%;
-  text-align: left;
+  text-align: start;
 }
 .settings-page .settings-nav .nav-link:hover, .settings-page .settings-nav .nav-link:focus {
   background: var(--bs-secondary-bg-subtle);
@@ -20254,7 +20317,7 @@ textarea.form-control-lg {
   border-top: 1px solid var(--bs-border-color);
   padding: 1rem 0;
   margin-top: 2rem;
-  text-align: right;
+  text-align: end;
 }
 .settings-page .save-settings-bar .btn {
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
@@ -20268,11 +20331,11 @@ textarea.form-control-lg {
 }
 .settings-page .settings-search .form-control {
   border-radius: 50px;
-  padding-left: 2.5rem;
+  padding-inline-start: 2.5rem;
 }
 .settings-page .settings-search .search-icon {
   position: absolute;
-  left: 1rem;
+  inset-inline-start: 1rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--bs-secondary-color);
@@ -20357,7 +20420,7 @@ textarea.form-control-lg {
   display: block;
   text-decoration: none;
   width: 100%;
-  text-align: left;
+  text-align: start;
 }
 .security-page .security-nav .nav-link:hover, .security-page .security-nav .nav-link:focus {
   background: var(--bs-secondary-bg-subtle);
@@ -20776,7 +20839,7 @@ textarea.form-control-lg {
   position: relative;
 }
 .help-page .faq-search .search-container .form-control {
-  padding-left: 2.5rem;
+  padding-inline-start: 2.5rem;
   border-radius: 50px;
   border: 2px solid var(--bs-border-color);
 }
@@ -20786,7 +20849,7 @@ textarea.form-control-lg {
 }
 .help-page .faq-search .search-container .search-icon {
   position: absolute;
-  left: 1rem;
+  inset-inline-start: 1rem;
   top: 50%;
   transform: translateY(-50%);
   color: var(--bs-secondary-color);
@@ -20809,7 +20872,7 @@ textarea.form-control-lg {
   padding: 1.25rem 1.5rem;
   background: var(--bs-body-bg);
   border: none;
-  text-align: left;
+  text-align: start;
   font-weight: 500;
   color: var(--bs-body-color);
   cursor: pointer;
@@ -20826,7 +20889,7 @@ textarea.form-control-lg {
 .help-page .faq-item .faq-question::after {
   content: "+";
   position: absolute;
-  right: 1.5rem;
+  inset-inline-end: 1.5rem;
   top: 50%;
   transform: translateY(-50%);
   font-size: 1.25rem;
@@ -21386,12 +21449,12 @@ textarea.form-control-lg {
 .element-code-block .line-number {
   color: #858585;
   font-size: 0.8em;
-  margin-right: 1em;
+  margin-inline-end: 1em;
   opacity: 0.7;
   user-select: none;
   display: inline-block;
   width: 2em;
-  text-align: right;
+  text-align: end;
 }
 
 @media (max-width: 576px) {
