@@ -411,7 +411,7 @@ const switchToBootstrap = () => {
 
 class ThemeManager {
   constructor() {
-    this.currentTheme = this.getStoredTheme() || this.getPreferredTheme();
+    this.currentTheme = resolveInitialTheme();
     this.themeToggleButtons = [];
     this.init();
   }
@@ -465,6 +465,18 @@ class ThemeManager {
   getCurrentTheme() {
     return this.currentTheme;
   }
+}
+
+function resolveInitialTheme() {
+  try {
+    const stored = localStorage.getItem('theme');
+    if (stored === 'dark' || stored === 'light') return stored;
+  } catch (e) {
+    /* private mode */
+  }
+  const attr = document.documentElement.getAttribute('data-bs-theme');
+  if (attr === 'dark' || attr === 'light') return attr;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
 
@@ -2157,8 +2169,7 @@ document.addEventListener('alpine:init', () => {
     currentTheme: 'light',
     
     init() {
-      // Get theme from localStorage or default to light
-      this.currentTheme = localStorage.getItem('theme') || 'light';
+      this.currentTheme = resolveInitialTheme();
       this.applyTheme();
     },
     
@@ -3507,7 +3518,7 @@ document.addEventListener('alpine:init', () => {
     currentTheme: 'light',
 
     init() {
-      this.currentTheme = localStorage.getItem('theme') || 'light';
+      this.currentTheme = resolveInitialTheme();
       document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
     },
 
@@ -4317,7 +4328,7 @@ document.addEventListener('alpine:init', () => {
     currentTheme: 'light',
 
     init() {
-      this.currentTheme = localStorage.getItem('theme') || 'light';
+      this.currentTheme = resolveInitialTheme();
       document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
     },
 
@@ -4765,7 +4776,7 @@ document.addEventListener('alpine:init', () => {
     currentTheme: 'light',
 
     init() {
-      this.currentTheme = localStorage.getItem('theme') || 'light';
+      this.currentTheme = resolveInitialTheme();
       document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
     },
 
@@ -5302,7 +5313,7 @@ document.addEventListener('alpine:init', () => {
     currentTheme: 'light',
 
     init() {
-      this.currentTheme = localStorage.getItem('theme') || 'light';
+      this.currentTheme = resolveInitialTheme();
       document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
     },
 
@@ -6009,7 +6020,7 @@ document.addEventListener('alpine:init', () => {
     currentTheme: 'light',
 
     init() {
-      this.currentTheme = localStorage.getItem('theme') || 'light';
+      this.currentTheme = resolveInitialTheme();
       document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
     },
 
@@ -6099,11 +6110,7 @@ document.addEventListener('alpine:init', () => {
     ],
 
     init() {
-      // Get current theme from document or localStorage
-      const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 
-                          localStorage.getItem('theme') || 'light';
-      
-      // Update settings theme to match current theme
+      const currentTheme = resolveInitialTheme();
       this.settings.theme = currentTheme;
       
       this.loadSettings();
@@ -6347,27 +6354,10 @@ document.addEventListener('alpine:init', () => {
     currentTheme: 'light',
 
     init() {
-      this.currentTheme = localStorage.getItem('theme') || 'light';
+      this.currentTheme = resolveInitialTheme();
       document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
     },
 
-    toggle() {
-      this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
-      localStorage.setItem('theme', this.currentTheme);
-    }
-  }));
-
-  // Also register search and theme components for this page
-
-  Alpine.data('themeSwitch', () => ({
-    currentTheme: 'light',
-    
-    init() {
-      this.currentTheme = document.documentElement.getAttribute('data-bs-theme') || 
-                         localStorage.getItem('theme') || 'light';
-    },
-    
     toggle() {
       this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
       document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
@@ -6838,8 +6828,8 @@ document.addEventListener('alpine:init', () => {
     currentTheme: 'light',
     
     init() {
-      this.currentTheme = document.documentElement.getAttribute('data-bs-theme') || 
-                         localStorage.getItem('theme') || 'light';
+      this.currentTheme = resolveInitialTheme();
+      document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
     },
     
     toggle() {
@@ -7664,7 +7654,7 @@ document.addEventListener('alpine:init', () => {
     currentTheme: 'light',
 
     init() {
-      this.currentTheme = localStorage.getItem('theme') || 'light';
+      this.currentTheme = resolveInitialTheme();
       document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
     },
 
@@ -8208,8 +8198,8 @@ document.addEventListener('alpine:init', () => {
     currentTheme: 'light',
     
     init() {
-      this.currentTheme = document.documentElement.getAttribute('data-bs-theme') || 
-                         localStorage.getItem('theme') || 'light';
+      this.currentTheme = resolveInitialTheme();
+      document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
     },
     
     toggle() {
@@ -9116,7 +9106,8 @@ class AdminApp {
       currentTheme: 'light',
       
       init() {
-        this.currentTheme = localStorage.getItem('theme') || 'light';
+        this.currentTheme = resolveInitialTheme();
+        document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
       },
       
       toggle() {
