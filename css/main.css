@@ -21334,6 +21334,51 @@ textarea.form-control-lg {
   background-color: white;
 }
 
+/* ApexCharts: tooltips default to light theme (white box); force dark surfaces when Bootstrap is dark */
+[data-bs-theme=dark] .apexcharts-tooltip,
+[data-bs-theme=dark] .apexcharts-tooltip.apexcharts-theme-light,
+[data-bs-theme=dark] .apexcharts-tooltip.apexcharts-theme-dark {
+  color: #f1f5f9 !important;
+  background: rgba(15, 23, 42, 0.98) !important;
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
+}
+[data-bs-theme=dark] .apexcharts-tooltip-title {
+  background: rgba(30, 41, 59, 0.98) !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22) !important;
+  color: #f8fafc !important;
+}
+[data-bs-theme=dark] .apexcharts-tooltip-text-y-label,
+[data-bs-theme=dark] .apexcharts-tooltip-text-y-value,
+[data-bs-theme=dark] .apexcharts-tooltip-text-z-label,
+[data-bs-theme=dark] .apexcharts-tooltip-text-z-value,
+[data-bs-theme=dark] .apexcharts-tooltip-goals-group,
+[data-bs-theme=dark] .apexcharts-tooltip-marker {
+  color: #e2e8f0 !important;
+}
+[data-bs-theme=dark] .apexcharts-xaxistooltip,
+[data-bs-theme=dark] .apexcharts-yaxistooltip {
+  color: #f1f5f9 !important;
+  background: rgba(30, 41, 59, 0.98) !important;
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
+}
+
+/* Chart.js HTML tooltip (when enabled) */
+[data-bs-theme=dark] .chartjs-tooltip,
+[data-bs-theme=dark] #chartjs-tooltip {
+  background: rgba(15, 23, 42, 0.98) !important;
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
+  color: #f1f5f9 !important;
+}
+[data-bs-theme=dark] .chartjs-tooltip table,
+[data-bs-theme=dark] #chartjs-tooltip table {
+  color: inherit !important;
+}
+[data-bs-theme=dark] .chartjs-tooltip .chartjs-tooltip-key,
+[data-bs-theme=dark] #chartjs-tooltip .chartjs-tooltip-key {
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
 /*# sourceMappingURL=main.css.map */
 /*!
  * Bootstrap Icons v1.11.3 (https://icons.getbootstrap.com/)

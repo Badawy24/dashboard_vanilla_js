@@ -1126,6 +1126,14 @@ class DashboardManager {
         plugins: {
           legend: {
             display: false
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleColor: '#f8fafc',
+            bodyColor: '#e2e8f0',
+            borderColor: 'rgba(148, 163, 184, 0.3)',
+            borderWidth: 1,
+            cornerRadius: 8
           }
         },
         scales: {
@@ -1182,6 +1190,14 @@ class DashboardManager {
               padding: 20,
               usePointStyle: true
             }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            titleColor: '#f8fafc',
+            bodyColor: '#e2e8f0',
+            borderColor: 'rgba(148, 163, 184, 0.3)',
+            borderWidth: 1,
+            cornerRadius: 8
           }
         }
       }
@@ -4236,6 +4252,9 @@ document.addEventListener('alpine:init', () => {
 
       try {
         const trendsData = {
+          theme: {
+            mode: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light'
+          },
           series: [{
             name: 'Orders',
             data: [12, 19, 15, 27, 24, 32, 28]
@@ -4306,6 +4325,9 @@ document.addEventListener('alpine:init', () => {
 
       try {
         const chartData = {
+          theme: {
+            mode: document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'dark' : 'light'
+          },
           series: this.statusStats.map(stat => stat.count),
           chart: {
             type: 'donut',
