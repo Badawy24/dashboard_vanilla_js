@@ -338,7 +338,7 @@
                                     </h5>
                                 </div>
                                 <div class="card-body">
-                                    <form x-data="contactForm()" @submit.prevent="submitForm()">
+                                    <form x-data="contactForm" @submit.prevent="submitForm()">
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <div class="form-group floating-label">
@@ -472,7 +472,7 @@
                                     </h5>
                                 </div>
                                 <div class="card-body">
-                                    <form x-data="registrationForm()" @submit.prevent="submitForm()">
+                                    <form x-data="registrationForm" @submit.prevent="submitForm()">
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <label class="form-label">Username</label>
@@ -608,7 +608,7 @@
                                     </h5>
                                 </div>
                                 <div class="card-body">
-                                    <div x-data="fileUploadForm()">
+                                    <div x-data="fileUploadForm">
                                         <!-- Upload Zone -->
                                         <div 
                                             class="file-upload-zone"
@@ -683,7 +683,7 @@
                                     </h5>
                                 </div>
                                 <div class="card-body">
-                                    <div x-data="enhancedFormWizard()">
+                                    <div x-data="enhancedFormWizard">
                                         <!-- Progress Bar -->
                                         <div class="mb-4">
                                             <div class="d-flex justify-content-between align-items-center mb-2">

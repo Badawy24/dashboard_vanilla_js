@@ -1508,6 +1508,92 @@ class DashboardManager {
 }
 
 
+// Dashboard-only Alpine data — must register on alpine:init before Alpine.start() (microtask).
+// initAlpine() ran too late (after await in AdminApp.init), so x-data had no statsCounter / iconDemo / quickAddForm.
+document.addEventListener('alpine:init', () => {
+  Alpine.data('statsCounter', (initialValue = 0, increment = 1) => ({
+    value: initialValue,
+
+    init() {
+      setInterval(() => {
+        this.value += Math.floor(Math.random() * increment) + 1;
+      }, 5000);
+    }
+  }));
+
+  Alpine.data('iconDemo', () => ({
+    currentProvider: 'bootstrap',
+
+    switchProvider(provider) {
+      this.currentProvider = provider;
+      iconManager.switchProvider(provider);
+      console.log(`🎨 Switched to ${provider} icons`);
+    },
+
+    getIcon(iconName) {
+      return iconManager.get(iconName);
+    }
+  }));
+
+  Alpine.data('quickAddForm', () => ({
+    itemType: 'task',
+    title: '',
+    description: '',
+    priority: 'medium',
+    dateTime: '',
+    assignee: '',
+
+    init() {
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      this.dateTime = now.toISOString().slice(0, 16);
+    },
+
+    resetForm() {
+      this.itemType = 'task';
+      this.title = '';
+      this.description = '';
+      this.priority = 'medium';
+      this.assignee = '';
+      const now = new Date();
+      now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+      this.dateTime = now.toISOString().slice(0, 16);
+    },
+
+    saveItem() {
+      if (!this.title.trim()) {
+        window.AdminApp.notificationManager.warning('Please enter a title');
+        return;
+      }
+
+      const item = {
+        type: this.itemType,
+        title: this.title,
+        description: this.description,
+        priority: this.itemType === 'task' ? this.priority : null,
+        dateTime: ['event', 'reminder'].includes(this.itemType) ? this.dateTime : null,
+        assignee: this.itemType === 'task' ? this.assignee : null,
+        createdAt: new Date().toISOString()
+      };
+
+      console.log('New item created:', item);
+
+      const typeLabels = {
+        task: 'Task',
+        note: 'Note',
+        event: 'Event',
+        reminder: 'Reminder'
+      };
+
+      window.AdminApp.notificationManager.success(
+        `${typeLabels[this.itemType]} "${this.title}" created successfully!`
+      );
+
+      this.resetForm();
+    }
+  }));
+});
+
 // ===== scripts/components/users.js =====
 document.addEventListener('alpine:init', () => {
   Alpine.data('userTable', () => ({
@@ -5673,8 +5759,16 @@ document.addEventListener('alpine:init', () => {
     },
 
     isToday(date) {
+      if (date == null || date === '') return false;
       const today = new Date();
-      return date.toDateString() === today.toDateString();
+      const ymd = (d) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      if (typeof date === 'string') {
+        return date === ymd(today);
+      }
+      const d = date instanceof Date ? date : new Date(date);
+      if (Number.isNaN(d.getTime())) return false;
+      return ymd(d) === ymd(today);
     },
 
     isCurrentHour(hour) {
@@ -8212,171 +8306,474 @@ document.addEventListener('alpine:init', () => {
 
 
 // ===== scripts/components/forms.js =====
+// forms.html uses separate x-data components; the old formsComponent shape did not register these names.
 document.addEventListener('alpine:init', () => {
-  Alpine.data('formsComponent', () => ({
-    // Contact Form
-    contactForm: {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  Alpine.data('contactForm', () => ({
+    form: {
       firstName: '',
       lastName: '',
       email: '',
       subject: '',
       message: ''
     },
-    contactErrors: {},
-    isSubmittingContact: false,
+    errors: {},
+    isSubmitting: false,
 
-    // Registration Form
-    regForm: {
+    getFieldClass(field) {
+      return { 'is-invalid': !!this.errors[field] };
+    },
+
+    validateField(field) {
+      const f = this.form;
+      switch (field) {
+        case 'firstName':
+          this.errors.firstName = f.firstName.trim().length < 2 ? 'First name must be at least 2 characters' : '';
+          break;
+        case 'lastName':
+          this.errors.lastName = f.lastName.trim().length < 2 ? 'Last name must be at least 2 characters' : '';
+          break;
+        case 'email':
+          this.errors.email = !emailRegex.test(f.email.trim()) ? 'Please enter a valid email address' : '';
+          break;
+        case 'message':
+          this.errors.message = f.message.trim().length < 10 ? 'Message must be at least 10 characters' : '';
+          break;
+        default:
+          break;
+      }
+    },
+
+    async submitForm() {
+      ['firstName', 'lastName', 'email', 'message'].forEach((k) => this.validateField(k));
+      if (Object.values(this.errors).some(Boolean)) return;
+      if (!this.form.subject) return;
+
+      this.isSubmitting = true;
+      await new Promise((r) => setTimeout(r, 1200));
+      this.isSubmitting = false;
+      alert('Contact form submitted!');
+      this.form = { firstName: '', lastName: '', email: '', subject: '', message: '' };
+      this.errors = {};
+    }
+  }));
+
+  Alpine.data('registrationForm', () => ({
+    form: {
       username: '',
       email: '',
       password: '',
       confirmPassword: '',
-      agreeToTerms: false
+      agreeTerms: false
     },
-    regErrors: {},
-    isSubmittingReg: false,
-    passwordStrength: { score: 0, level: 'weak' },
+    errors: {},
+    isSubmitting: false,
+    showPassword: false,
+    passwordStrength: { level: 'weak', percentage: 0, color: 'muted', text: 'Enter a password' },
 
-    // File Upload
+    get isFormValid() {
+      const f = this.form;
+      const emailOk = emailRegex.test((f.email || '').trim());
+      const pwdOk = this.passwordScore(f.password) >= 3;
+      const match = f.password === f.confirmPassword && f.confirmPassword.length > 0;
+      return (
+        f.username.trim().length >= 3 &&
+        emailOk &&
+        pwdOk &&
+        match &&
+        f.agreeTerms &&
+        !this.errors.username &&
+        !this.errors.email &&
+        !this.errors.password &&
+        !this.errors.confirmPassword
+      );
+    },
+
+    passwordScore(password) {
+      let score = 0;
+      if (!password) return 0;
+      if (password.length >= 8) score++;
+      if (/[a-z]/.test(password)) score++;
+      if (/[A-Z]/.test(password)) score++;
+      if (/[0-9]/.test(password)) score++;
+      if (/[^A-Za-z0-9]/.test(password)) score++;
+      return score;
+    },
+
+    syncPasswordStrength() {
+      const p = this.form.password;
+      const score = this.passwordScore(p);
+      const percentage = Math.min(100, score * 20);
+      if (!p) {
+        this.passwordStrength = { level: 'weak', percentage: 0, color: 'muted', text: 'Enter a password' };
+        return;
+      }
+      if (score <= 2) {
+        this.passwordStrength = { level: 'weak', percentage, color: 'danger', text: 'Weak' };
+      } else if (score === 3) {
+        this.passwordStrength = { level: 'fair', percentage, color: 'warning', text: 'Fair' };
+      } else if (score === 4) {
+        this.passwordStrength = { level: 'good', percentage, color: 'info', text: 'Good' };
+      } else {
+        this.passwordStrength = { level: 'strong', percentage: 100, color: 'success', text: 'Strong' };
+      }
+    },
+
+    getFieldClass(field) {
+      return { 'is-invalid': !!this.errors[field] };
+    },
+
+    validateField(field) {
+      const f = this.form;
+      switch (field) {
+        case 'username':
+          this.errors.username = f.username.trim().length < 3 ? 'Username must be at least 3 characters' : '';
+          break;
+        case 'email':
+          this.errors.email = !emailRegex.test(f.email.trim()) ? 'Please enter a valid email address' : '';
+          break;
+        case 'password':
+          this.syncPasswordStrength();
+          this.errors.password = this.passwordScore(f.password) < 3 ? 'Password is too weak' : '';
+          break;
+        case 'confirmPassword':
+          this.errors.confirmPassword =
+            f.password !== f.confirmPassword ? 'Passwords do not match' : '';
+          break;
+        default:
+          break;
+      }
+    },
+
+    validatePassword() {
+      this.syncPasswordStrength();
+      this.validateField('password');
+    },
+
+    async submitForm() {
+      ['username', 'email', 'password', 'confirmPassword'].forEach((k) => this.validateField(k));
+      if (!this.form.agreeTerms) {
+        alert('Please agree to the terms to continue.');
+        return;
+      }
+      if (Object.values(this.errors).some(Boolean) || !this.isFormValid) return;
+
+      this.isSubmitting = true;
+      await new Promise((r) => setTimeout(r, 1500));
+      this.isSubmitting = false;
+      alert('Registration submitted!');
+      this.form = { username: '', email: '', password: '', confirmPassword: '', agreeTerms: false };
+      this.errors = {};
+      this.showPassword = false;
+      this.syncPasswordStrength();
+    }
+  }));
+
+  Alpine.data('fileUploadForm', () => ({
+    dragOver: false,
     files: [],
-    isDragging: false,
 
-    // Wizard
-    wizardStep: 1,
-    wizardData: {
-        personal: {
-            firstName: '',
-            lastName: '',
-            email: ''
-        },
-        account: {
-            username: '',
-            password: ''
-        },
-        address: {
-            street: '',
-            city: '',
-            zip: ''
-        }
-    },
-    wizardErrors: { personal: {}, account: {}, address: {} },
-
-    // General method to validate a field for any form
-    validate(formName, field) {
-        let errors;
-        let form;
-        
-        switch(formName) {
-            case 'contact':
-                errors = this.contactErrors;
-                form = this.contactForm;
-                break;
-            case 'registration':
-                errors = this.regErrors;
-                form = this.regForm;
-                break;
-            // Add other forms here
-            default:
-                return;
-        }
-
-        switch (field) {
-            case 'firstName':
-                errors.firstName = form.firstName.length < 2 ? 'First name must be at least 2 characters' : '';
-                break;
-            case 'lastName':
-                errors.lastName = form.lastName.length < 2 ? 'Last name must be at least 2 characters' : '';
-                break;
-            case 'email':
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                errors.email = !emailRegex.test(form.email) ? 'Please enter a valid email address' : '';
-                break;
-            case 'username':
-                errors.username = form.username.length < 3 ? 'Username must be at least 3 characters' : '';
-                break;
-            case 'password':
-                this.updatePasswordStrength();
-                errors.password = this.passwordStrength.score < 3 ? 'Password is too weak' : '';
-                break;
-            case 'confirmPassword':
-                errors.confirmPassword = form.password !== form.confirmPassword ? 'Passwords do not match' : '';
-                break;
-        }
+    handleDrop(event) {
+      this.dragOver = false;
+      if (event.dataTransfer?.files) {
+        this.handleFiles(event.dataTransfer.files);
+      }
     },
 
-    updatePasswordStrength() {
-        const password = this.regForm.password;
-        let score = 0;
-        if (password.length >= 8) score++;
-        if (/[a-z]/.test(password)) score++;
-        if (/[A-Z]/.test(password)) score++;
-        if (/[0-9]/.test(password)) score++;
-        if (/[^A-Za-z0-9]/.test(password)) score++;
-        
-        const levels = ['weak', 'weak', 'fair', 'good', 'strong'];
-        this.passwordStrength = { score, level: levels[Math.floor(score/1.2)] };
-    },
-
-    handleFiles(event) {
-        const fileList = event.target.files || event.dataTransfer.files;
-        for (let i = 0; i < fileList.length; i++) {
-            const file = fileList[i];
-            this.files.push({
-                id: Date.now() + i,
-                name: file.name,
-                size: (file.size / 1024).toFixed(2) + ' KB',
-                progress: 0,
-                status: 'uploading'
-            });
-            // Simulate upload
-            this.simulateUpload(this.files[this.files.length - 1]);
-        }
+    handleFiles(fileList) {
+      if (!fileList || !fileList.length) return;
+      for (let i = 0; i < fileList.length; i++) {
+        const file = fileList[i];
+        const item = {
+          id: Date.now() + i + Math.random(),
+          name: file.name,
+          size: `${(file.size / 1024).toFixed(2)} KB`,
+          progress: 0,
+          status: 'uploading'
+        };
+        this.files.push(item);
+        this.simulateUpload(item);
+      }
     },
 
     simulateUpload(fileObj) {
-        const interval = setInterval(() => {
-            fileObj.progress += 10;
-            if (fileObj.progress >= 100) {
-                fileObj.progress = 100;
-                fileObj.status = 'complete';
-                clearInterval(interval);
-            }
-        }, 200);
+      const interval = setInterval(() => {
+        fileObj.progress += 10;
+        if (fileObj.progress >= 100) {
+          fileObj.progress = 100;
+          fileObj.status = 'completed';
+          clearInterval(interval);
+        }
+      }, 200);
     },
 
     removeFile(fileId) {
-        this.files = this.files.filter(f => f.id !== fileId);
+      this.files = this.files.filter((f) => f.id !== fileId);
+    }
+  }));
+
+  Alpine.data('enhancedFormWizard', () => ({
+    currentStep: 1,
+    totalSteps: 5,
+    isSubmitting: false,
+    steps: [
+      { id: 1, title: 'Personal', description: 'Your details' },
+      { id: 2, title: 'Address', description: 'Location' },
+      { id: 3, title: 'Account', description: 'Security' },
+      { id: 4, title: 'Review', description: 'Preferences' },
+      { id: 5, title: 'Complete', description: 'Finished' }
+    ],
+    formData: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      birthDate: '',
+      gender: '',
+      address: '',
+      city: '',
+      state: '',
+      zipCode: '',
+      country: 'US',
+      username: '',
+      password: '',
+      confirmPassword: '',
+      securityQuestion: '',
+      securityAnswer: '',
+      emailNotifications: false,
+      smsNotifications: false,
+      marketingEmails: false,
+      profilePublic: false,
+      agreeToTerms: false
+    },
+    errors: {},
+    passwordStrength: { level: 'weak', percentage: 0, color: 'muted', text: 'Enter a password' },
+
+    passwordScore(password) {
+      let score = 0;
+      if (!password) return 0;
+      if (password.length >= 8) score++;
+      if (/[a-z]/.test(password)) score++;
+      if (/[A-Z]/.test(password)) score++;
+      if (/[0-9]/.test(password)) score++;
+      if (/[^A-Za-z0-9]/.test(password)) score++;
+      return score;
     },
 
-    // Wizard methods
-    nextStep() {
-        if (this.wizardStep < 3) {
-            this.wizardStep++;
-        }
+    updatePasswordStrength() {
+      const p = this.formData.password;
+      const score = this.passwordScore(p);
+      const percentage = Math.min(100, score * 20);
+      if (!p) {
+        this.passwordStrength = { level: 'weak', percentage: 0, color: 'muted', text: 'Enter a password' };
+        return;
+      }
+      if (score <= 2) {
+        this.passwordStrength = { level: 'weak', percentage, color: 'danger', text: 'Weak' };
+      } else if (score === 3) {
+        this.passwordStrength = { level: 'fair', percentage, color: 'warning', text: 'Fair' };
+      } else if (score === 4) {
+        this.passwordStrength = { level: 'good', percentage, color: 'info', text: 'Good' };
+      } else {
+        this.passwordStrength = { level: 'strong', percentage: 100, color: 'success', text: 'Strong' };
+      }
     },
+
+    getFieldClass(field) {
+      return { 'is-invalid': !!this.errors[field] };
+    },
+
+    validateField(field) {
+      const d = this.formData;
+      switch (field) {
+        case 'firstName':
+          this.errors.firstName = d.firstName.trim().length < 2 ? 'Required (min 2 characters)' : '';
+          break;
+        case 'lastName':
+          this.errors.lastName = d.lastName.trim().length < 2 ? 'Required (min 2 characters)' : '';
+          break;
+        case 'email':
+          this.errors.email = !emailRegex.test(d.email.trim()) ? 'Valid email required' : '';
+          break;
+        case 'phone':
+          this.errors.phone =
+            d.phone && !/^[\d\s+().-]{7,}$/.test(d.phone) ? 'Invalid phone format' : '';
+          break;
+        case 'birthDate':
+          this.errors.birthDate = '';
+          break;
+        case 'address':
+          this.errors.address = d.address.trim().length < 3 ? 'Street address required' : '';
+          break;
+        case 'city':
+          this.errors.city = d.city.trim().length < 2 ? 'City required' : '';
+          break;
+        case 'state':
+          this.errors.state = !d.state ? 'State required' : '';
+          break;
+        case 'zipCode':
+          this.errors.zipCode = !/^\d{5}(-\d{4})?$/.test(d.zipCode.trim()) ? 'Valid ZIP required' : '';
+          break;
+        case 'username':
+          this.errors.username = d.username.trim().length < 3 ? 'Username required (min 3)' : '';
+          break;
+        case 'password':
+          this.updatePasswordStrength();
+          this.errors.password = this.passwordScore(d.password) < 3 ? 'Password too weak' : '';
+          break;
+        case 'confirmPassword':
+          this.errors.confirmPassword =
+            d.password !== d.confirmPassword ? 'Passwords do not match' : '';
+          break;
+        case 'agreeToTerms':
+          this.errors.agreeToTerms = !d.agreeToTerms ? 'You must agree to continue' : '';
+          break;
+        default:
+          break;
+      }
+    },
+
+    stepFields(step) {
+      switch (step) {
+        case 1:
+          return ['firstName', 'lastName', 'email', 'phone', 'birthDate'];
+        case 2:
+          return ['address', 'city', 'state', 'zipCode'];
+        case 3:
+          return ['username', 'password', 'confirmPassword'];
+        case 4:
+          return ['agreeToTerms'];
+        default:
+          return [];
+      }
+    },
+
+    computeStepValid(step) {
+      const d = this.formData;
+      switch (step) {
+        case 1:
+          return (
+            d.firstName.trim().length >= 2 &&
+            d.lastName.trim().length >= 2 &&
+            emailRegex.test(d.email.trim()) &&
+            (!d.phone || /^[\d\s+().-]{7,}$/.test(d.phone))
+          );
+        case 2:
+          return (
+            d.address.trim().length >= 3 &&
+            d.city.trim().length >= 2 &&
+            !!d.state &&
+            /^\d{5}(-\d{4})?$/.test(d.zipCode.trim())
+          );
+        case 3:
+          return (
+            d.username.trim().length >= 3 &&
+            this.passwordScore(d.password) >= 3 &&
+            d.password === d.confirmPassword &&
+            d.confirmPassword.length > 0
+          );
+        case 4:
+          return !!d.agreeToTerms;
+        default:
+          return true;
+      }
+    },
+
+    applyStepErrors(step) {
+      this.stepFields(step).forEach((f) => this.validateField(f));
+    },
+
+    isStepCompleted(stepId) {
+      if (this.currentStep === 5) return stepId < 5;
+      return stepId < this.currentStep;
+    },
+
+    hasStepError(stepId) {
+      return this.stepFields(stepId).some((f) => !!this.errors[f]);
+    },
+
+    goToStep(id) {
+      if (id < 1 || id > 5) return;
+      if (id <= this.currentStep) {
+        this.currentStep = id;
+        return;
+      }
+      for (let s = this.currentStep; s < id; s++) {
+        if (!this.computeStepValid(s)) {
+          this.applyStepErrors(s);
+          return;
+        }
+      }
+      this.currentStep = id;
+    },
+
+    canProceed() {
+      return this.computeStepValid(this.currentStep);
+    },
+
     prevStep() {
-        if (this.wizardStep > 1) {
-            this.wizardStep--;
-        }
-    },
-    goToStep(step) {
-        this.wizardStep = step;
+      if (this.currentStep > 1) this.currentStep--;
     },
 
-    async submitContactForm() {
-        this.isSubmittingContact = true;
-        // Simulate API call
-        await new Promise(res => setTimeout(res, 1500));
-        this.isSubmittingContact = false;
-        alert('Contact form submitted!');
+    async nextStep() {
+      if (!this.computeStepValid(this.currentStep)) {
+        this.applyStepErrors(this.currentStep);
+        return;
+      }
+      if (this.currentStep === 4) {
+        this.isSubmitting = true;
+        await new Promise((r) => setTimeout(r, 1200));
+        this.isSubmitting = false;
+        this.currentStep = 5;
+        return;
+      }
+      if (this.currentStep < 5) this.currentStep++;
     },
 
-    async submitRegForm() {
-        this.isSubmittingReg = true;
-        // Simulate API call
-        await new Promise(res => setTimeout(res, 1500));
-        this.isSubmittingReg = false;
-        alert('Registration form submitted!');
+    handleSubmit() {
+      if (this.currentStep === 4) {
+        this.nextStep();
+      }
+    },
+
+    saveDraft() {
+      try {
+        localStorage.setItem('formWizardDraft', JSON.stringify({ formData: this.formData, currentStep: this.currentStep }));
+        alert('Draft saved locally.');
+      } catch (e) {
+        console.warn('Draft save failed', e);
+      }
+    },
+
+    resetWizard() {
+      this.currentStep = 1;
+      this.isSubmitting = false;
+      this.formData = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        birthDate: '',
+        gender: '',
+        address: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        country: 'US',
+        username: '',
+        password: '',
+        confirmPassword: '',
+        securityQuestion: '',
+        securityAnswer: '',
+        emailNotifications: false,
+        smsNotifications: false,
+        marketingEmails: false,
+        profilePublic: false,
+        agreeToTerms: false
+      };
+      this.errors = {};
+      this.updatePasswordStrength();
     }
   }));
 });
@@ -8728,9 +9125,6 @@ class AdminApp {
       // Initialize tooltips and popovers globally
       this.initTooltipsAndPopovers();
 
-      // Initialize Alpine.js
-      this.initAlpine();
-
       this.isInitialized = true;
       console.log('🚀 Admin App initialized successfully');
 
@@ -9058,144 +9452,6 @@ class AdminApp {
         }
       }
     });
-  }
-
-  // Initialize Alpine.js
-  initAlpine() {
-    // Register Alpine data components
-    Alpine.data('searchComponent', () => ({
-      query: '',
-      results: [],
-      isLoading: false,
-      
-      async search() {
-        if (this.query.length < 2) {
-          this.results = [];
-          return;
-        }
-        
-        this.isLoading = true;
-        // Simulate API search
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
-        this.results = [
-          { title: 'Dashboard', url: '/', type: 'page' },
-          { title: 'Users', url: '/users', type: 'page' },
-          { title: 'Settings', url: '/settings', type: 'page' },
-          { title: 'Analytics', url: '/analytics', type: 'page' }
-        ].filter(item => 
-          item.title.toLowerCase().includes(this.query.toLowerCase())
-        );
-        
-        this.isLoading = false;
-      }
-    }));
-
-    Alpine.data('statsCounter', (initialValue = 0, increment = 1) => ({
-      value: initialValue,
-      
-      init() {
-        // Auto-increment every 5 seconds
-        setInterval(() => {
-          this.value += Math.floor(Math.random() * increment) + 1;
-        }, 5000);
-      }
-    }));
-
-    Alpine.data('themeSwitch', () => ({
-      currentTheme: 'light',
-      
-      init() {
-        this.currentTheme = resolveInitialTheme();
-        document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
-      },
-      
-      toggle() {
-        this.currentTheme = this.currentTheme === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-bs-theme', this.currentTheme);
-        localStorage.setItem('theme', this.currentTheme);
-      }
-    }));
-
-    Alpine.data('iconDemo', () => ({
-      currentProvider: 'bootstrap',
-
-      switchProvider(provider) {
-        this.currentProvider = provider;
-        iconManager.switchProvider(provider);
-        console.log(`🎨 Switched to ${provider} icons`);
-      },
-
-      getIcon(iconName) {
-        return iconManager.get(iconName);
-      }
-    }));
-
-    // Quick Add Form for Dashboard
-    Alpine.data('quickAddForm', () => ({
-      itemType: 'task',
-      title: '',
-      description: '',
-      priority: 'medium',
-      dateTime: '',
-      assignee: '',
-
-      init() {
-        // Set default date to now
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        this.dateTime = now.toISOString().slice(0, 16);
-      },
-
-      resetForm() {
-        this.itemType = 'task';
-        this.title = '';
-        this.description = '';
-        this.priority = 'medium';
-        this.assignee = '';
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        this.dateTime = now.toISOString().slice(0, 16);
-      },
-
-      saveItem() {
-        if (!this.title.trim()) {
-          window.AdminApp.notificationManager.warning('Please enter a title');
-          return;
-        }
-
-        const item = {
-          type: this.itemType,
-          title: this.title,
-          description: this.description,
-          priority: this.itemType === 'task' ? this.priority : null,
-          dateTime: ['event', 'reminder'].includes(this.itemType) ? this.dateTime : null,
-          assignee: this.itemType === 'task' ? this.assignee : null,
-          createdAt: new Date().toISOString()
-        };
-
-        // In a real app, this would send to an API
-        console.log('New item created:', item);
-
-        // Show success notification with item type
-        const typeLabels = {
-          task: 'Task',
-          note: 'Note',
-          event: 'Event',
-          reminder: 'Reminder'
-        };
-
-        window.AdminApp.notificationManager.success(
-          `${typeLabels[this.itemType]} "${this.title}" created successfully!`
-        );
-
-        // Reset form for next use
-        this.resetForm();
-      }
-    }));
-
-    // Start Alpine.js
-    window.Alpine = Alpine;
   }
 
   // Show demo notifications
